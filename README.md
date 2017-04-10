@@ -1,4 +1,4 @@
-# TMC2130Stepper
+# TMC2208Stepper
 Arduino library for Trinamic TMC2208 Stepper driver
 
 
