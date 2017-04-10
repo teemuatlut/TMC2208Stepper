@@ -40,25 +40,18 @@ void setCurrent() | Set motor RMS current<br>Arguments:<br><b>uint16_t</b> curre
 
 ## RW: GCONF
 Function | Description
---------------------------------|---------------------------------------
-W: void GCONF(uint32_t)<br>R: bool GCONF(uint32_t *) 			| GCONF register
-W: void I_scale_analog(bool)<br>R: bool I_scale_analog()		| I_scale_analog (Reset default=1)<br>0: Use internal reference derived from 5VOUT<br>1: Use voltage supplied to VREF as current reference
-void internal_Rsense(bool)		| internal_Rsense (Reset default: OTP)<br>0: Operation with external sense resistors<br>1: Internal sense resistors. Use current supplied into VREF as reference for internal sense resistor. VREF pin internally is driven to GND in this mode.
-void en_spreadCycle(bool)		| en_spreadCycle (Reset default: OTP)<br>0: stealthChop PWM mode enabled (depending on velocity thresholds). Initially switch from off to on state while in stand still, only.<br>1: spreadCycle mode enabled<br>A high level on the pin SPREAD (TMC222x, only) inverts this flag to switch between both chopper modes.
-void shaft(bool)				| shaft<br>1: Inverse motor direction
-void index_otpw(bool)			| index_otpw<br>0: INDEX shows the first microstep position of sequencer<br>1: INDEX pin outputs overtemperature prewarning flag (otpw) instead
-void index_step(bool)			| index_step<br>0: INDEX output as selected by index_otpw<br>1: INDEX output shows step pulses from internal pulse generator (toggle upon each step)
-void pdn_disable(bool)			| pdn_disable<br>0: PDN_UART controls standstill current reduction<br>1: PDN_UART input function disabled. Set this bit, when using the UART interface!
-void mstep_reg_select(bool)		| mstep_reg_select<br>0: Microstep resolution selected by pins MS1, MS2<br>1: Microstep resolution selected by MSTEP register
-void multistep_filt(bool)		| multistep_filt (Reset default=1)<br>0: No filtering of STEP pulses<br>1: Software pulse generator optimization enabled when fullstep frequency > 750Hz (roughly). TSTEP shows filtered step time values when active.
-bool internal_Rsense()			| 
-bool en_spreadCycle()			| 
-bool shaft()					| 
-bool index_otpw()				| 
-bool index_step()				| 
-bool pdn_disable()				|
-bool mstep_reg_select()			| 
-bool multistep_filt()			| 
+------------------------------------------------------------|---------------------------------------
+bool GCONF(uint32_t *)		| Read GCONF register
+void GCONF(uint32_t)  		| Write to the GCONF register
+void I_scale_analog(bool)	| I_scale_analog (Reset default=1)<br>0: Use internal reference derived from 5VOUT<br>1: Use voltage supplied to VREF as current reference
+void internal_Rsense(bool)	| internal_Rsense (Reset default: OTP)<br>0: Operation with external sense resistors<br>1: Internal sense resistors. Use current supplied into VREF as reference for internal sense resistor. VREF pin internally is driven to GND in this mode.
+void en_spreadCycle(bool)	| en_spreadCycle (Reset default: OTP)<br>0: stealthChop PWM mode enabled (depending on velocity thresholds). Initially switch from off to on state while in stand still, only.<br>1: spreadCycle mode enabled<br>A high level on the pin SPREAD (TMC222x, only) inverts this flag to switch between both chopper modes.
+void shaft(bool)			| shaft<br>1: Inverse motor direction
+void index_otpw(bool)		| index_otpw<br>0: INDEX shows the first microstep position of sequencer<br>1: INDEX pin outputs overtemperature prewarning flag (otpw) instead
+void index_step(bool)		| index_step<br>0: INDEX output as selected by index_otpw<br>1: INDEX output shows step pulses from internal pulse generator (toggle upon each step)
+void pdn_disable(bool)		| pdn_disable<br>0: PDN_UART controls standstill current reduction<br>1: PDN_UART input function disabled. Set this bit, when using the UART interface!
+void mstep_reg_select(bool)	| mstep_reg_select<br>0: Microstep resolution selected by pins MS1, MS2<br>1: Microstep resolution selected by MSTEP register
+void multistep_filt(bool)	| multistep_filt (Reset default=1)<br>0: No filtering of STEP pulses<br>1: Software pulse generator optimization enabled when fullstep frequency > 750Hz (roughly). TSTEP shows filtered step time values when active.
 
 ## R+WC: GSTAT
 Function | Description
