@@ -79,8 +79,10 @@ class TMC2208Stepper {
 		bool IHOLD_IRUN(uint32_t *data);
 		void ihold(uint8_t B);
 		void irun(uint8_t B);
+		void iholddelay(uint8_t B);
 		uint8_t ihold();
 		uint8_t irun();
+		uint8_t iholddelay();
 		// W: TPOWERDOWN
 		void TPOWERDOWN(uint32_t input);
 		bool TPOWERDOWN(uint32_t *data);

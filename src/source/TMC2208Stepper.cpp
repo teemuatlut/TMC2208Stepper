@@ -183,10 +183,12 @@ bool TMC2208Stepper::IHOLD_IRUN(uint32_t *data) {
 	data = &IHOLD_IRUN_sr;
 	return 0;
 }
-void TMC2208Stepper::ihold(uint8_t B) 	{ MOD_REG(IHOLD_IRUN, IHOLD);	}
-void TMC2208Stepper::irun(uint8_t B)  	{ MOD_REG(IHOLD_IRUN, IRUN); 	}
-uint8_t TMC2208Stepper::ihold() 		{ GET_BYTE(IHOLD_IRUN, IHOLD);	}
-uint8_t TMC2208Stepper::irun()  		{ GET_BYTE(IHOLD_IRUN, IRUN); 	}
+void TMC2208Stepper::ihold(uint8_t B) 		{ MOD_REG(IHOLD_IRUN, IHOLD);		}
+void TMC2208Stepper::irun(uint8_t B)  		{ MOD_REG(IHOLD_IRUN, IRUN); 		}
+void TMC2208Stepper::iholddelay(uint8_t B)	{ MOD_REG(IHOLD_IRUN, IHOLDDELAY); 	}
+uint8_t TMC2208Stepper::ihold() 			{ GET_BYTE(IHOLD_IRUN, IHOLD);		}
+uint8_t TMC2208Stepper::irun()  			{ GET_BYTE(IHOLD_IRUN, IRUN); 		}
+uint8_t TMC2208Stepper::iholddelay()  		{ GET_BYTE(IHOLD_IRUN, IHOLDDELAY);	}
 
 // TPOWERDOWN
 void TMC2208Stepper::TPOWERDOWN(uint32_t input) {
