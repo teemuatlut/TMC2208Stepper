@@ -36,6 +36,10 @@ void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) {
 	ihold(CS*multiplier);
 	mA_val = mA;
 
+float TMC2208Stepper::getCurrent() {
+	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421;
+}
+
 void TMC2208Stepper::microsteps(uint16_t ms) {
 	switch(ms) {
 		case 256: mres(0); break;
