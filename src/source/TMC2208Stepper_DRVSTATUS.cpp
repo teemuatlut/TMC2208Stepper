@@ -21,3 +21,4 @@ bool TMC2208Stepper::t157() 	{ GET_BYTE_R(DRV_STATUS, T157); 	}
 bool TMC2208Stepper::stealth() 	{ GET_BYTE_R(DRV_STATUS, STEALTH);	}
 bool TMC2208Stepper::stst() 	{ GET_BYTE_R(DRV_STATUS, STST); 	}
 
+uint16_t 	TMC2208Stepper::cs_actual()	{ GET_BYTE_R(DRV_STATUS, CS_ACTUAL);}

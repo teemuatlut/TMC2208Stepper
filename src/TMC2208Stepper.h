@@ -132,6 +132,7 @@ class TMC2208Stepper {
 		bool t143();
 		bool t150();
 		bool t157();
+		uint16_t cs_actual();
 		bool stealth();
 		bool stst();
 		// RW: PWMCONF
