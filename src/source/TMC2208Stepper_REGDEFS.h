@@ -156,7 +156,7 @@
 #define HEND_bm				0x780
 #define TBL_bm		  		0x18000
 #define VSENSE_bm	  		0x20000
-#define MRES_bm				0x7000000
+#define MRES_bm				0xF000000
 #define INTPOL_bm  			0x10000000
 #define DEDGE_bm   			0x20000000
 #define DISS2G_bm  			0x40000000

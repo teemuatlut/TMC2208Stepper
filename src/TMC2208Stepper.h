@@ -102,7 +102,7 @@ class TMC2208Stepper {
 		void hend(uint8_t B);
 		void tbl(uint8_t B);
 		void vsense(bool B);
-		void mres(uint8_t B);
+		void mres(uint16_t B);
 		void intpol(bool B);
 		void dedge(bool B);
 		void diss2g(bool B);

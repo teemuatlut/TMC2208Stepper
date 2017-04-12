@@ -9,16 +9,16 @@ void TMC2208Stepper::CHOPCONF(uint32_t input) {
 bool TMC2208Stepper::CHOPCONF(uint32_t *data) {
 	READ_REG(GCONF);
 }
-void TMC2208Stepper::toff	( uint8_t B )	{ MOD_REG(CHOPCONF, TOFF); 		}
-void TMC2208Stepper::hstrt	( uint8_t B )	{ MOD_REG(CHOPCONF, HSTRT); 	}
-void TMC2208Stepper::hend	( uint8_t B )	{ MOD_REG(CHOPCONF, HEND); 		}
-void TMC2208Stepper::tbl	( uint8_t B )	{ MOD_REG(CHOPCONF, TBL); 		}
-void TMC2208Stepper::vsense	( bool    B )	{ MOD_REG(CHOPCONF, VSENSE); 	}
-void TMC2208Stepper::mres	( uint8_t B )	{ MOD_REG(CHOPCONF, MRES); 		}
-void TMC2208Stepper::intpol	( bool    B )	{ MOD_REG(CHOPCONF, INTPOL); 	}
-void TMC2208Stepper::dedge	( bool    B )	{ MOD_REG(CHOPCONF, DEDGE);  	}
-void TMC2208Stepper::diss2g	( bool    B )	{ MOD_REG(CHOPCONF, DISS2G); 	}
-void TMC2208Stepper::diss2vs( bool    B )	{ MOD_REG(CHOPCONF, DISS2VS);	}
+void TMC2208Stepper::toff	( uint8_t  B )	{ MOD_REG(CHOPCONF, TOFF); 		}
+void TMC2208Stepper::hstrt	( uint8_t  B )	{ MOD_REG(CHOPCONF, HSTRT); 	}
+void TMC2208Stepper::hend	( uint8_t  B )	{ MOD_REG(CHOPCONF, HEND); 		}
+void TMC2208Stepper::tbl	( uint8_t  B )	{ MOD_REG(CHOPCONF, TBL); 		}
+void TMC2208Stepper::vsense	( bool     B )	{ MOD_REG(CHOPCONF, VSENSE); 	}
+void TMC2208Stepper::mres	( uint16_t B )	{ MOD_REG(CHOPCONF, MRES); 		}
+void TMC2208Stepper::intpol	( bool     B )	{ MOD_REG(CHOPCONF, INTPOL); 	}
+void TMC2208Stepper::dedge	( bool     B )	{ MOD_REG(CHOPCONF, DEDGE);  	}
+void TMC2208Stepper::diss2g	( bool     B )	{ MOD_REG(CHOPCONF, DISS2G); 	}
+void TMC2208Stepper::diss2vs( bool     B )	{ MOD_REG(CHOPCONF, DISS2VS);	}
 
 uint8_t TMC2208Stepper::toff()		{ GET_BYTE(CHOPCONF, TOFF); 	}
 uint8_t TMC2208Stepper::hstrt()		{ GET_BYTE(CHOPCONF, HSTRT); 	}
