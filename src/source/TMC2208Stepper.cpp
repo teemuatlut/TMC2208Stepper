@@ -54,9 +54,8 @@ uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
 	return crc;
 }
 
-
 void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
-	uint8_t datagram[] = {SYNC, SLAVE_ADDR, addr, (uint8_t)(regVal>>24), (uint8_t)(regVal>>16), (uint8_t)(regVal>>8), (uint8_t)(regVal>>0), 0x00};
+	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, (uint8_t)(regVal>>24), (uint8_t)(regVal>>16), (uint8_t)(regVal>>8), (uint8_t)(regVal>>0), 0x00};
 
 	datagram[len] = calcCRC(datagram, len);
 
@@ -66,7 +65,7 @@ void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 }
 
 bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
-	uint8_t datagram[] = {SYNC, SLAVE_ADDR, addr, 0x00};
+	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, 0x00};
 	datagram[len] = calcCRC(datagram, len);
 
 	while (TMC_SERIAL->available() > 0) TMC_SERIAL->read(); // Flush
@@ -109,7 +108,7 @@ bool TMC2208Stepper::uv_cp()		{ GET_BYTE(GSTAT, UV_CP);	}
 
 // IFCNT
 bool TMC2208Stepper::IFCNT(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_IFCNT, data);
+	bool b = sendDatagram(TMC2208_READ|REG_IFCNT, data);
 	return b;
 }
 
@@ -133,7 +132,7 @@ void TMC2208Stepper::OTP_PROG(uint32_t input) {
 
 // IOIN
 bool TMC2208Stepper::IOIN(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_IOIN, data);
+	bool b = sendDatagram(TMC2208_READ|REG_IOIN, data);
 	return b;
 }
 bool TMC2208Stepper::enn()			{ GET_BYTE_R(IOIN, ENN);		}
@@ -178,12 +177,12 @@ void TMC2208Stepper::TPOWERDOWN(uint32_t input) {
 }
 bool TMC2208Stepper::TPOWERDOWN(uint32_t *data) {
 	data = &TPOWERDOWN_sr;
-	return 1;
+	return 0;
 }
 
 // TSTEP
 bool TMC2208Stepper::TSTEP(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_TSTEP, data);
+	bool b = sendDatagram(TMC2208_READ|REG_TSTEP, data);
 	return b;
 }
 
@@ -209,13 +208,13 @@ bool TMC2208Stepper::VACTUAL(uint32_t *data) {
 
 // MSCNT
 bool TMC2208Stepper::MSCNT(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_MSCNT, data);
+	bool b = sendDatagram(TMC2208_READ|REG_MSCNT, data);
 	return b;
 }
 
 // MSCURACT
 bool TMC2208Stepper::MSCURACT(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_MSCURACT, data);
+	bool b = sendDatagram(TMC2208_READ|REG_MSCURACT, data);
 	return b;
 }
 uint16_t TMC2208Stepper::cur_a() { GET_BYTE_R(MSCURACT, CUR_A);	}
@@ -223,7 +222,7 @@ uint16_t TMC2208Stepper::cur_b() { GET_BYTE_R(MSCURACT, CUR_B);	}
 
 // MSCNT
 bool TMC2208Stepper::PWM_SCALE(uint32_t *data) {
-	bool b = sendDatagram(READ|REG_PWM_SCALE, data);
+	bool b = sendDatagram(TMC2208_READ|REG_PWM_SCALE, data);
 	return b;
 }
 uint8_t TMC2208Stepper::pwm_scale_sum() { GET_BYTE_R(PWM_SCALE, PWM_SCALE_SUM); }

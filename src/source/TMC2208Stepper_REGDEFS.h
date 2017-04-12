@@ -1,10 +1,10 @@
 #ifndef TMC2208Stepper_REGDEFS_h
 #define TMC2208Stepper_REGDEFS_h
 
-#define READ 				0x00
-#define WRITE 				0x80
-#define SYNC 				0x05
-#define SLAVE_ADDR			0x00
+#define TMC2208_READ 		0x00
+#define TMC2208_WRITE 		0x80
+#define TMC2208_SYNC 		0x05
+#define TMC2208_SLAVE_ADDR	0x00
 
 // Register memory positions
 #define REG_GCONF 			0x00

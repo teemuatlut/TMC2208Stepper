@@ -36,7 +36,8 @@ void loop() {
 
 Function | Description
 -----|-------
-void setCurrent() | Set motor RMS current<br>Arguments:<br><b>uint16_t</b> current_rms<br><b>float</b> sense resistor value<br><b>float</b> hold current multiplier
+void setCurrent() | Set motor RMS current<br>Arguments:<br><b>uint16_t</b> current_rms<br><b>float</b> hold current multiplier<br><i>Optional:</i><br><b>float</b> sense resistor value (default=0.11)
+uint16_t getCurrent() | Get motor RMS current stored in the driver registery
 
 ## RW: GCONF
 Function | Description
