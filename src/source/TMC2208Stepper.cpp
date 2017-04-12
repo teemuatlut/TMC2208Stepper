@@ -88,9 +88,8 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 
 	while (TMC_SERIAL->available() > 0) TMC_SERIAL->read(); // Flush
 
-	for(int i=0; i<=len; i++) bytesWritten += TMC_SERIAL->write(datagram[i]);
+	for(int i=0; i<=len; i++) TMC_SERIAL->write(datagram[i]);
 	
-
 	TMC_SERIAL->flush(); // Wait for TX to finish
 	for(int byte=0; byte<4; byte++) TMC_SERIAL->read(); // Flush bytes written
 	delay(replyDelay);
@@ -101,6 +100,7 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 		out <<= 8;
 		out |= res&0xFF;
 	}
+
 	uint8_t out_datagram[] = {(uint8_t)(out>>56), (uint8_t)(out>>48), (uint8_t)(out>>40), (uint8_t)(out>>32), (uint8_t)(out>>24), (uint8_t)(out>>16), (uint8_t)(out>>8), (uint8_t)(out>>0)};
 	if (calcCRC(out_datagram, 7) == (uint8_t)(out&0xFF)) {
 		*data = out>>8;
