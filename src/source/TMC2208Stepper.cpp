@@ -35,6 +35,20 @@ void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) {
 	irun(CS);
 	ihold(CS*multiplier);
 	mA_val = mA;
+
+void TMC2208Stepper::microsteps(uint16_t ms) {
+	switch(ms) {
+		case 256: mres(0); break;
+		case 128: mres(1); break;
+		case  64: mres(2); break;
+		case  32: mres(3); break;
+		case  16: mres(4); break;
+		case   8: mres(5); break;
+		case   4: mres(6); break;
+		case   2: mres(7); break;
+		case   1: mres(8); break;
+		default: break;
+	}
 }
 
 uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {

@@ -13,6 +13,7 @@ class TMC2208Stepper {
 		//TMC2208Stepper(HardwareSerial& serial);
 		TMC2208Stepper(Stream * serial);
 		void setCurrent(uint16_t mA, float Rsense, float multiplier);
+		void microsteps(uint16_t ms);
 		// RW: GCONF
 		void GCONF(uint32_t input);
 		void I_scale_analog(bool B);
