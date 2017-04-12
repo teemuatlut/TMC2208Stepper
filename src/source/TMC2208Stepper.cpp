@@ -93,7 +93,7 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 
 	TMC_SERIAL->flush(); // Wait for TX to finish
 	for(int byte=0; byte<4; byte++) TMC_SERIAL->read(); // Flush bytes written
-	delay(1);
+	delay(replyDelay);
 
 	uint64_t out = 0x00000000UL;
 	while(TMC_SERIAL->available() > 0) {

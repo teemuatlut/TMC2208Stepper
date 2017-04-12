@@ -164,6 +164,7 @@ class TMC2208Stepper {
 
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
+		uint16_t replyDelay = 10;
 	private:
 		Stream * TMC_SERIAL;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
