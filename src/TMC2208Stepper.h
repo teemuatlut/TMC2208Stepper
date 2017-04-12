@@ -5,6 +5,7 @@
 	#include <Arduino.h>
 #endif
 
+#include <Stream.h>
 #include "source/TMC2208Stepper_REGDEFS.h"
 
 
