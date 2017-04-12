@@ -12,7 +12,7 @@ class TMC2208Stepper {
 	public:
 		//TMC2208Stepper(HardwareSerial& serial);
 		TMC2208Stepper(Stream * serial);
-		void setCurrent(uint16_t mA, float Rsense, float multiplier);
+		void setCurrent(uint16_t mA, float multiplier, float RS=0.11);
 		float getCurrent();
 		void microsteps(uint16_t ms);
 		// RW: GCONF
@@ -162,6 +162,7 @@ class TMC2208Stepper {
 		int16_t pwm_scale_auto();
 
 		uint16_t bytesWritten = 0;
+		float Rsense = 0.11;
 	private:
 		Stream * TMC_SERIAL;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
@@ -180,8 +181,6 @@ class TMC2208Stepper {
 					CHOPCONF_sr = 		0x00000000UL,
 					PWMCONF_sr = 		0x00000000UL,
 					tmp_sr = 			0x00000000UL;
-
-		uint32_t mA_val = 0;
 };
 
 #endif

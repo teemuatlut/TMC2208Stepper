@@ -22,9 +22,9 @@ TMC2208Stepper::TMC2208Stepper(Stream * SR) {
 	CS = 32*sqrt(2)*1.64*(0.10+0.02)/0.325 - 1 = 26.4
 	CS = 26
 */
-void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) {
+void TMC2208Stepper::setCurrent(uint16_t mA, float multiplier, float RS) {
+	Rsense = RS;
 	uint8_t CS = 32.0*1.41421*mA/1000.0*(Rsense+0.02)/0.325 - 1;
-	
 	// If Current Scale is too low, turn on high sensitivity R_sense and calculate again
 	if (CS < 16) {
 		vsense(true);
@@ -34,7 +34,7 @@ void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) {
 	}
 	irun(CS);
 	ihold(CS*multiplier);
-	mA_val = mA;
+}
 
 float TMC2208Stepper::getCurrent() {
 	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421;
