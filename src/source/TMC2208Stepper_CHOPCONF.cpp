@@ -7,7 +7,7 @@ void TMC2208Stepper::CHOPCONF(uint32_t input) {
 	UPDATE_REG(CHOPCONF);
 }
 bool TMC2208Stepper::CHOPCONF(uint32_t *data) {
-	READ_REG(GCONF);
+	READ_REG(CHOPCONF);
 }
 void TMC2208Stepper::toff	( uint8_t  B )	{ MOD_REG(CHOPCONF, TOFF); 		}
 void TMC2208Stepper::hstrt	( uint8_t  B )	{ MOD_REG(CHOPCONF, HSTRT); 	}
@@ -30,4 +30,3 @@ bool 	TMC2208Stepper::intpol()	{ GET_BYTE(CHOPCONF, INTPOL); 	}
 bool 	TMC2208Stepper::dedge()		{ GET_BYTE(CHOPCONF, DEDGE);  	}
 bool 	TMC2208Stepper::diss2g()	{ GET_BYTE(CHOPCONF, DISS2G); 	}
 bool 	TMC2208Stepper::diss2vs()	{ GET_BYTE(CHOPCONF, DISS2VS);	}
-
