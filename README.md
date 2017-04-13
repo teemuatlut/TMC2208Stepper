@@ -1,3 +1,7 @@
+# Table of contents
+[Headers](#headers)
+[Emphasis](#emphasis)
+
 # TMC2208Stepper
 Arduino library for Trinamic TMC2208 Stepper driver
 
@@ -21,7 +25,7 @@ void setup() {
 
 	driver.pdn_disable(1);							// Use PDN/UART pin for communication
 	driver.I_scale_analog(0);						// Adjust current from the registers
-	driver.setCurrent(500);							// Set driver current 500mA
+	driver.rms_current(500);						// Set driver current 500mA
 	driver.toff(0x2);								// Enable driver
 
 	digitalWrite(13, LOW);							// Enable driver
@@ -37,9 +41,8 @@ void loop() {
 
 Function | Description
 ------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void setCurrent(<br><b>uint16_t<br>float<br>float</b><br>) 	| Set motor RMS current<br>Arguments:<br><b>uint16_t</b> current_rms<br><i>Optional:</i><br><b>float</b> hold current multiplier<br><b>float</b> sense resistor value (default=0.11)
-uint16_t getCurrent() 										| Get motor RMS current stored in the driver registery
-void microsteps() 											| [0..256] Set number of microsteps
+void rms_current(<br>**uint16_t<br>float<br>float**<br>) 	| Set motor RMS current<br>Arguments:<br>**uint16_t** current_rms<br><i>Optional:</i><br>**float** hold current multiplier (default=0.5)<br>**float** sense resistor value (default=0.11)
+void microsteps(uint16_t)									| [0..256] Set number of microsteps
 
 ## RW: GCONF
 Function | Description
@@ -64,9 +67,6 @@ bool GSTAT(uint32_t*)		| Read GSTAT register
 void reset(bool)			| 1: Indicates that the IC has been reset since the last<br>	read access to GSTAT. All registers have been cleared to reset values.
 void drv_err(bool)			| 1: Indicates, that the driver has been shut down due to<br>	overtemperature or short circuit detection since the last read access. Read DRV_STATUS<br>	for details. The flag can only be cleared when all error conditions are cleared.
 void uv_cp(bool)			| 1: Indicates an undervoltage on the charge pump. The<br>		driver is disabled in this case. This flag is not latched and thus does not need to be cleared.
-bool reset()				| 
-bool drv_err()				| 
-bool uv_cp()				| 
 
 ## R: IFCNT
 Function | Description
@@ -75,15 +75,14 @@ bool IFCNT(uint32_t*)		| Interface transmission counter. This register becomes<b
 
 ## W: SLAVECONF
 Function | Description
--|-
+----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void SLAVECONF(uint32_t)	| Write register
 bool SLAVECONF(uint32_t*)	| Read register
 void senddelay(uint8_t)		| SENDDELAY for read access (time until reply is sent):<br>		0, 1: 8 bit times<br>																		2, 3: 3*8 bit times<br>															4, 5: 5*8 bit times<br>			6, 7: 7*8 bit times<br>			8, 9: 9*8 bit times<br>			10, 11: 11*8 bit times<br>			12, 13: 13*8 bit times<br>			14, 15: 15*8 bit times
-uint8_t senddelay()			| 
 
 ## W: OTP_PROG
 Function | Description
-----------------------------|---------------------------------------
+----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void OTP_PROG(uint32_t)		| OTP_PROGRAM – OTP programming Write access programs OTP<br>	memory (one bit at a time), Read access refreshes read data from OTP after a write<br>		2..0 OTPBIT<br>																	Selection of OTP bit to be programmed to the selected byte location (n=0..7: programs bit n to a logic 1)<br>5..4 OTPBYTE<br>Selection of OTP programming location (0, 1 or 2)<br>15..8 OTPMAGIC<br>Set to 0xbd to enable programming. A programming time of minimum 10ms per bit is recommended (check by reading OTP_READ).
 
 ## R: OTP_READ
@@ -100,19 +99,17 @@ bool ms2()						| MS2
 bool diag()						| DIAG
 bool pdn_uart()					| PDN_UART
 bool step()						| STEP
-bool sel_a()					| SEL_A: Driver type<br>1: TMC220x<br>0: TMC222x
+bool sel_a()					| SEL_A: Driver type<br>									1: TMC220x<br>																				0: TMC222x
 bool dir()						| DIR
 uint8_t version()				| VERSION: 0x20=first version of the IC<br>					Identical numbers mean full digital compatibility.
 
 ## RW: FACTORY_CONF
 Function | Description
 --------------------------------|---------------------------------------
-void FACTORY_CONF(uint32_t)		| 
-bool FACTORY_CONF(uint32_t*)	| 
-void fclktrim(uint8_t)			| 0…31: Lowest to highest clock frequency. Check at charge pump output. The frequency span is not guaranteed, but it is tested, that tuning to 12MHz internal clock is possible. The devices come preset to 12MHz clock frequency by OTP programming.
-void ottrim(uint8_t)			| %00: OT=143°C, OTPW=120°C<br>%01: OT=150°C, OTPW=120°C<br>%10: OT=150°C, OTPW=143°C<br>%11: OT=157°C, OTPW=143°C
-uint8_t fclktrim()				| 
-uint8_t ottrim()				| 
+void FACTORY_CONF(uint32_t)		| Write register
+bool FACTORY_CONF(uint32_t*)	| Read register
+void fclktrim(uint8_t)			| 0…31: Lowest to highest clock frequency. Check at<br>		charge pump output. The frequency span is not guaranteed, but it is tested, that tuning<br>	to 12MHz internal clock is possible. The devices come preset to 12MHz clock<br>	frequency by OTP programming.
+void ottrim(uint8_t)			| %00: OT=143°C, OTPW=120°C<br>								%01: OT=150°C, OTPW=120°C<br>																%10: OT=150°C, OTPW=143°C<br>													%11: OT=157°C, OTPW=143°C
 
 ## W: IHOLD_IRUN
 Function | Description
@@ -122,8 +119,6 @@ bool IHOLD_IRUN(uint32_t*)		|
 void ihold(uint8_t)				| (Reset default: OTP)<br>Standstill current (0=1/32 … 31=32/32)<br>In combination with stealthChop mode, setting IHOLD=0 allows to choose freewheeling or coil short circuit (passive braking) for motor stand still.
 void irun(uint8_t)				| (Reset default=31)<br>Motor run current (0=1/32 … 31=32/32)<br>Hint: Choose sense resistors in a way, that normal IRUN is 16 to 31 for best microstep performance.
 void iholddelay(uint8_t)		| (Reset default: OTP)<br>Controls the number of clock cycles for motor power down after standstill is detected (stst=1) and TPOWERDOWN has expired. The smooth transition avoids a motor jerk upon power down.<br>0: instant power down<br>1..15: Delay per current reduction step in multiple of 2^18 clocks
-uint8_t ihold()					| 
-uint8_t irun()					| 
 
 ## W: TPOWERDOWN
 Function | Description
