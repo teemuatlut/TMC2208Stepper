@@ -56,7 +56,7 @@ void TMC2208Stepper::microsteps(uint16_t ms) {
 }
 
 uint16_t TMC2208Stepper::microsteps() {
-	ms = mres();
+	uint8_t ms = mres();
 	switch(ms) {
 		case 0: return 256;
 		case 1: return 128;
@@ -67,7 +67,6 @@ uint16_t TMC2208Stepper::microsteps() {
 		case 6: return   4;
 		case 7: return   2;
 		case 8: return   0;
-		default: return;
 	}
 }
 
