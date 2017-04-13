@@ -16,6 +16,7 @@ class TMC2208Stepper {
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		float rms_current();
 		void microsteps(uint16_t ms);
+		uint16_t microsteps();
 		// RW: GCONF
 		void GCONF(uint32_t input);
 		void I_scale_analog(bool B);
