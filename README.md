@@ -4,27 +4,27 @@ Arduino library for Trinamic TMC2208 Stepper driver
 
 ### Example
 ```cpp
-#define EN_PIN    13 															// LOW: Driver enabled. HIGH: Driver disabled
-#define STEP_PIN  54 															// Step on rising edge
+#define EN_PIN    13 								// LOW: Driver enabled. HIGH: Driver disabled
+#define STEP_PIN  54 								// Step on rising edge
 
-#include <TMC2208Stepper.h>												// Include library
+#include <TMC2208Stepper.h>							// Include library
 TMC2208Stepper driver = TMC2208Stepper(&Serial);	// Create driver and use
-																									// HardwareSerial0 for communication
+													// HardwareSerial0 for communication
 
 void setup() {
-	Serial.begin(115200);														// Init used serial port
-	while(!Serial);																	// Wait for port to be ready
+	Serial.begin(115200);							// Init used serial port
+	while(!Serial);									// Wait for port to be ready
 
 	// Prepare pins
 	pinMode(EN_PIN, OUTPUT);
 	pinMode(STEP_PIN, OUTPUT);
 
-	driver.pdn_disable(1);													// Use PDN/UART pin for communication
-	driver.I_scale_analog(0);												// Adjust current from the registers
-	driver.setCurrent(500);													// Set driver current 500mA
-	driver.toff(0x2);																// Enable driver
+	driver.pdn_disable(1);							// Use PDN/UART pin for communication
+	driver.I_scale_analog(0);						// Adjust current from the registers
+	driver.setCurrent(500);							// Set driver current 500mA
+	driver.toff(0x2);								// Enable driver
 
-	digitalWrite(13, LOW);													// Enable driver
+	digitalWrite(13, LOW);							// Enable driver
 }
 
 void loop() {
@@ -36,62 +36,63 @@ void loop() {
 ## Helper functions
 
 Function | Description
------|-------
-void setCurrent() | Set motor RMS current<br>Arguments:<br><b>uint16_t</b> current_rms<br><b>float</b> hold current multiplier<br><i>Optional:</i><br><b>float</b> sense resistor value (default=0.11)
-uint16_t getCurrent() | Get motor RMS current stored in the driver registery
+------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void setCurrent(<br><b>uint16_t<br>float<br>float</b><br>) 	| Set motor RMS current<br>Arguments:<br><b>uint16_t</b> current_rms<br><i>Optional:</i><br><b>float</b> hold current multiplier<br><b>float</b> sense resistor value (default=0.11)
+uint16_t getCurrent() 										| Get motor RMS current stored in the driver registery
+void microsteps() 											| [0..256] Set number of microsteps
 
 ## RW: GCONF
 Function | Description
-------------------------------------------------------------|---------------------------------------
+----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool GCONF(uint32_t *)		| Read GCONF register
 void GCONF(uint32_t)  		| Write to the GCONF register
-void I_scale_analog(bool)	| I_scale_analog (Reset default=1)<br>0: Use internal reference derived from 5VOUT<br>1: Use voltage supplied to VREF as current reference
-void internal_Rsense(bool)	| internal_Rsense (Reset default: OTP)<br>0: Operation with external sense resistors<br>1: Internal sense resistors. Use current supplied into VREF as reference for internal sense resistor. VREF pin internally is driven to GND in this mode.
-void en_spreadCycle(bool)	| en_spreadCycle (Reset default: OTP)<br>0: stealthChop PWM mode enabled (depending on velocity thresholds). Initially switch from off to on state while in stand still, only.<br>1: spreadCycle mode enabled<br>A high level on the pin SPREAD (TMC222x, only) inverts this flag to switch between both chopper modes.
-void shaft(bool)			| shaft<br>1: Inverse motor direction
-void index_otpw(bool)		| index_otpw<br>0: INDEX shows the first microstep position of sequencer<br>1: INDEX pin outputs overtemperature prewarning flag (otpw) instead
-void index_step(bool)		| index_step<br>0: INDEX output as selected by index_otpw<br>1: INDEX output shows step pulses from internal pulse generator (toggle upon each step)
-void pdn_disable(bool)		| pdn_disable<br>0: PDN_UART controls standstill current reduction<br>1: PDN_UART input function disabled. Set this bit, when using the UART interface!
-void mstep_reg_select(bool)	| mstep_reg_select<br>0: Microstep resolution selected by pins MS1, MS2<br>1: Microstep resolution selected by MSTEP register
-void multistep_filt(bool)	| multistep_filt (Reset default=1)<br>0: No filtering of STEP pulses<br>1: Software pulse generator optimization enabled when fullstep frequency > 750Hz (roughly). TSTEP shows filtered step time values when active.
+void I_scale_analog(bool)	| (Reset default=1)<br>											0: Use internal reference derived from 5VOUT<br>											1: Use voltage supplied to VREF as current reference
+void internal_Rsense(bool)	| (Reset default: OTP)<br>										0: Operation with external sense resistors<br>												1: Internal sense resistors. Use current supplied into VREF as reference<br>	for internal sense resistor. VREF pin internally is driven to GND in this mode.
+void en_spreadCycle(bool)	| (Reset default: OTP)<br>										0: stealthChop PWM mode enabled (depending on velocity thresholds).<br>						Initially switch from off to on state while in stand still, only.<br>			1: spreadCycle mode enabled
+void shaft(bool)			| 1: Inverse motor direction
+void index_otpw(bool)		| 0: INDEX shows the first microstep position of sequencer<br>	1: INDEX pin outputs overtemperature prewarning flag (otpw) instead
+void index_step(bool)		| 0: INDEX output as selected by index_otpw<br>					1: INDEX output shows step pulses from internal pulse generator (toggle upon each step)
+void pdn_disable(bool)		| 0: PDN_UART controls standstill current reduction<br>			1: PDN_UART input function disabled. Set this bit, when using the UART interface!
+void mstep_reg_select(bool)	| 0: Microstep resolution selected by pins MS1, MS2<br>			1: Microstep resolution selected by MSTEP register
+void multistep_filt(bool)	| (Reset default=1)<br>											0: No filtering of STEP pulses<br>															1: Software pulse generator optimization enabled when fullstep<br>				frequency > 750Hz (roughly). TSTEP shows filtered step time values when active.
 
 ## R+WC: GSTAT
 Function | Description
---------------------------------|---------------------------------------
-void GSTAT(uint32_t)			| Write to GSTAT register
-bool GSTAT(uint32_t*)			| Read GSTAT register
-void reset(bool)				| 1: Indicates that the IC has been reset since the last read access to GSTAT. All registers have been cleared to reset values.
-void drv_err(bool)				| 1: Indicates, that the driver has been shut down due to overtemperature or short circuit detection since the last read access. Read DRV_STATUS for details. The flag can only be cleared when all error conditions are cleared.
-void uv_cp(bool)				| 1: Indicates an undervoltage on the charge pump. The driver is disabled in this case. This flag is not
-bool reset()					| 
-bool drv_err()					| 
-bool uv_cp()					| 
+----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void GSTAT(uint32_t)		| Write to GSTAT register
+bool GSTAT(uint32_t*)		| Read GSTAT register
+void reset(bool)			| 1: Indicates that the IC has been reset since the last<br>	read access to GSTAT. All registers have been cleared to reset values.
+void drv_err(bool)			| 1: Indicates, that the driver has been shut down due to<br>	overtemperature or short circuit detection since the last read access. Read DRV_STATUS<br>	for details. The flag can only be cleared when all error conditions are cleared.
+void uv_cp(bool)			| 1: Indicates an undervoltage on the charge pump. The<br>		driver is disabled in this case. This flag is not latched and thus does not need to be cleared.
+bool reset()				| 
+bool drv_err()				| 
+bool uv_cp()				| 
 
 ## R: IFCNT
 Function | Description
---------------------------------|---------------------------------------
-bool IFCNT(uint32_t*)			| Interface transmission counter. This register becomes incremented with each successful UART interface write access. Read out to check the serial transmission for lost data. Read accesses do not change the content. The counter wraps around from 255 to 0.
+----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool IFCNT(uint32_t*)		| Interface transmission counter. This register becomes<br>		incremented with each successful UART interface write access. Read out to check the serial<br>	transmission for lost data. Read accesses do not change the content.<br>		The counter wraps around from 255 to 0.
 
 ## W: SLAVECONF
 Function | Description
---------------------------------|---------------------------------------
-void SLAVECONF(uint32_t)		| Write register
-bool SLAVECONF(uint32_t*)		| Read register
-void senddelay(uint8_t)			| SENDDELAY for read access (time until reply is sent):<br>0, 1: 8 bit times<br>2, 3: 3*8 bit times<br>4, 5: 5*8 bit times<br>6, 7: 7*8 bit times<br>8, 9: 9*8 bit times<br>10, 11: 11*8 bit times<br>12, 13: 13*8 bit times<br>14, 15: 15*8 bit times
-uint8_t senddelay()				| 
+-|-
+void SLAVECONF(uint32_t)	| Write register
+bool SLAVECONF(uint32_t*)	| Read register
+void senddelay(uint8_t)		| SENDDELAY for read access (time until reply is sent):<br>		0, 1: 8 bit times<br>																		2, 3: 3*8 bit times<br>															4, 5: 5*8 bit times<br>			6, 7: 7*8 bit times<br>			8, 9: 9*8 bit times<br>			10, 11: 11*8 bit times<br>			12, 13: 13*8 bit times<br>			14, 15: 15*8 bit times
+uint8_t senddelay()			| 
 
 ## W: OTP_PROG
 Function | Description
---------------------------------|---------------------------------------
-void OTP_PROG(uint32_t)			| OTP_PROGRAM – OTP programming Write access programs OTP memory (one bit at a time), Read access refreshes read data from OTP after a write<br>2..0 OTPBIT<br>Selection of OTP bit to be programmed to the selected byte location (n=0..7: programs bit n to a logic 1)<br>5..4 OTPBYTE<br>Selection of OTP programming location (0, 1 or 2)<br>15..8 OTPMAGIC<br>Set to 0xbd to enable programming. A programming time of minimum 10ms per bit is recommended (check by reading OTP_READ).
+----------------------------|---------------------------------------
+void OTP_PROG(uint32_t)		| OTP_PROGRAM – OTP programming Write access programs OTP<br>	memory (one bit at a time), Read access refreshes read data from OTP after a write<br>		2..0 OTPBIT<br>																	Selection of OTP bit to be programmed to the selected byte location (n=0..7: programs bit n to a logic 1)<br>5..4 OTPBYTE<br>Selection of OTP programming location (0, 1 or 2)<br>15..8 OTPMAGIC<br>Set to 0xbd to enable programming. A programming time of minimum 10ms per bit is recommended (check by reading OTP_READ).
 
 ## R: OTP_READ
 Function | Description
---------------------------------|---------------------------------------
+-|-
 
 ## R: IOIN
 Function | Description
---------------------------------|---------------------------------------
+-|-
 bool IOIN(uint32_t*)			| INPUT (Reads the state of all input pins available)
 bool enn()						| ENN
 bool ms1()						| MS1
@@ -101,7 +102,7 @@ bool pdn_uart()					| PDN_UART
 bool step()						| STEP
 bool sel_a()					| SEL_A: Driver type<br>1: TMC220x<br>0: TMC222x
 bool dir()						| DIR
-uint8_t version()				| VERSION: 0x20=first version of the IC<br>Identical numbers mean full digital compatibility.
+uint8_t version()				| VERSION: 0x20=first version of the IC<br>					Identical numbers mean full digital compatibility.
 
 ## RW: FACTORY_CONF
 Function | Description
@@ -127,12 +128,13 @@ uint8_t irun()					|
 ## W: TPOWERDOWN
 Function | Description
 --------------------------------|---------------------------------------
-void TPOWERDOWN(uint32_t)		| (Reset default=20)<br>Sets the delay time from stand still (stst) detection to motor current power down. Time range is about 0 to 5.6 seconds.<br>0…((2^8)-1) * 2^18 tCLK<br>Attention: A minimum setting of 2 is required to allow automatic tuning of stealthChop PWM_OFFS_AUTO.<br>bool TPOWERDOWN(uint32_t*)
+void TPOWERDOWN(uint32_t)		| (Reset default=20)<br>									Sets the delay time from stand still (stst) detection to motor current power down.<br>		Time range is about 0 to 5.6 seconds.<br>0…((2^8)-1) * 2^18 tCLK<br>Attention: A minimum setting of 2 is required to allow automatic tuning of stealthChop PWM_OFFS_AUTO.
+bool TPOWERDOWN(uint32_t*) 		|
 
 ## R: TSTEP
 Function | Description
 --------------------------------|---------------------------------------
-bool TSTEP(uint32_t*)			| Actual measured time between two 1/256 microsteps derived from the step input frequency in units of 1/fCLK. Measured value is (2^20)-1 in case of overflow or stand still.<br>The TSTEP related threshold uses a hysteresis of 1/16 of the compare value to compensate for jitter in the clock or the step frequency: (Txxx*15/16)-1 is the lower compare value for each TSTEP based comparison.<br>This means, that the lower switching velocity equals the calculated setting, but the upper switching velocity is higher as defined by the hysteresis setting.
+bool TSTEP(uint32_t*)			| Actual measured time between two 1/256 microsteps derived from the step input frequency in units of 1/fCLK. Measured value is (2^20)-1 in case of overflow or stand still.<br>														The TSTEP related threshold uses a hysteresis of 1/16 of the compare value to compensate for jitter in the clock or the step frequency: (Txxx*15/16)-1 is the lower compare value for each TSTEP based comparison.<br>This means, that the lower switching velocity equals the calculated setting, but the upper switching velocity is higher as defined by the hysteresis setting.
 
 ## W: TPWMTHRS
 Function | Description
