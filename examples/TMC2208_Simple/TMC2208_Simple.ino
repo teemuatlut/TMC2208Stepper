@@ -18,7 +18,7 @@ void setup() {
 
 	driver.pdn_disable(1);													// Use PDN/UART pin for communication
 	driver.I_scale_analog(0);												// Adjust current from the registers
-	driver.setCurrent(500);													// Set driver current 500mA
+	driver.rms_current(500);												// Set driver current 500mA
 	driver.toff(0x2);																// Enable driver
 
 	digitalWrite(13, LOW);													// Enable driver
