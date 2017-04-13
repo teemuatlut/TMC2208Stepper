@@ -23,7 +23,7 @@ void setup() {
 	pinMode(DIR_PIN, OUTPUT);
 
 	driver.pdn_disable(1);													// Use PDN/UART pin for communication
-	driver.setCurrent(500, 0.11, 0.5);							// Set driver current = 500mA, RSENSE = 0.11 and 0.5 multiplier for hold current.
+	driver.rms_current(500, 0.11, 0.5);							// Set driver current = 500mA, RSENSE = 0.11 and 0.5 multiplier for hold current.
 	driver.toff(0x2);																// Enable driver
 
 	digitalWrite(13, LOW);													// Enable driver
