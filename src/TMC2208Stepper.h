@@ -13,7 +13,7 @@ class TMC2208Stepper {
 	public:
 		//TMC2208Stepper(HardwareSerial& serial);
 		TMC2208Stepper(Stream * serial);
-		void setCurrent(uint16_t mA, float multiplier, float RS=0.11);
+		void setCurrent(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		float getCurrent();
 		void microsteps(uint16_t ms);
 		// RW: GCONF
