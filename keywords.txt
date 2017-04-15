@@ -12,7 +12,13 @@ Stepper	TMC2208Stepper	KEYWORD1
 # Methods and Functions KEYWORD2
 #######################################
 
+rms_current							KEYWORD2
+microsteps							KEYWORD2
 setCurrent							KEYWORD2
+getCurrent							KEYWORD2
+checkOT									KEYWORD2
+getOTPW									KEYWORD2
+clear_otpw							KEYWORD2
 
 GCONF										KEYWORD2
 I_scale_analog					KEYWORD2
@@ -55,6 +61,7 @@ ottrim									KEYWORD2
 IHOLD_IRUN							KEYWORD2
 ihold										KEYWORD2
 irun										KEYWORD2
+iholddelay							KEYWORD2
 
 TPOWERDOWN							KEYWORD2
 
@@ -95,6 +102,7 @@ t120										KEYWORD2
 t143										KEYWORD2
 t150										KEYWORD2
 t157										KEYWORD2
+cs_actual								KEYWORD2
 stealth									KEYWORD2
 stst										KEYWORD2
 
@@ -111,3 +119,7 @@ pwm_lim									KEYWORD2
 PWM_SCALE								KEYWORD2
 pwm_scale_sum						KEYWORD2
 pwm_scale_auto					KEYWORD2
+
+bytesWritten						KEYWORD2
+Rsense									KEYWORD2
+replyDelay							KEYWORD2
