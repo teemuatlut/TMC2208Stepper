@@ -6,7 +6,7 @@
 #endif
 
 #include <Stream.h>
-#include "source/TMC2208Stepper_REGDEFS.h"
+//#include "source/TMC2208Stepper_REGDEFS.h"
 
 
 class TMC2208Stepper {

@@ -1,7 +1,7 @@
 #ifndef TMC2208Stepper_MACROS_H
 #define TMC2208Stepper_MACROS_H
 #include "TMC2208Stepper.h"
-#include "TMC2208Stepper_REGDEFS.h"
+#include "../TMC2208Stepper_REGDEFS.h"
 
 #define UPDATE_REG(R) sendDatagram(TMC2208_WRITE|REG_##R, R##_sr);
 #define READ_REG(R)   bool b = sendDatagram(TMC2208_READ|REG_##R, data); R##_sr = *data; return b;
