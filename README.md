@@ -78,7 +78,12 @@ void loop() {
 Function | Description
 ------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void rms_current(<br>**uint16_t<br>float<br>float**<br>) 	| Set motor RMS current<br>Arguments:<br>**uint16_t** current_rms<br><i>Optional:</i><br>**float** hold current multiplier (default=0.5)<br>**float** sense resistor value (default=0.11)
+void setCurrent(<br>**uint16_t<br>float<br>float**<br>)     | (legacy)<br>Same as rms_current but rsense and hold current arguments<br>are switched. No defaults so requires all three parameters.
+uint16_t getCurrent()                                       | (legacy)<br>Same as calling rms_current()
 void microsteps(uint16_t)									| [0..256] Set number of microsteps
+bool checkOT()                                              | Read otpw flag from DRV_STATUS register and return the result.<br>Also store the result in variable held by the library.
+bool getOTPW()                                              | Return the flag value set by checkOT()
+void clear_otpw()                                           | Clear the flag held by the libarary
 
 ### RW: GCONF
 Function | Description
