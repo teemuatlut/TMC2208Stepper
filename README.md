@@ -5,6 +5,9 @@ Arduino library for Trinamic TMC2208 Stepper driver
 # Table of contents
 * [Wiring setup](#wiring)
 * [Example](#example)
+* [Writing to a register](#writing-to-a-register)
+* [Reading from a register](#reading-from-a-register)
+* [Using the functions](#using-the-functions)
 * [Helper functions](#helper-functions)
 * Setting registers
   * [RW: GCONF](#rw-gconf)
@@ -27,6 +30,7 @@ Arduino library for Trinamic TMC2208 Stepper driver
   * [R: DRV_STATUS](#r-drv_status)
   * [RW: PWMCONF](#rw-pwmconf)
   * [R: PWM_SCALE](#rw-pwm_scale)
+* [Bit positions and bit masks](#bit-positions-and-bit-masks)
 * [Datasheet](https://www.trinamic.com/fileadmin/assets/Products/ICs_Documents/TMC220x_TMC222x_Datasheet.pdf)
 
 ## Wiring
@@ -71,6 +75,34 @@ void loop() {
 	digitalWrite(STEP_PIN, !digitalRead(STEP_PIN)); // Step
 	delay(10);
 }
+```
+
+## Writing to a register
+Writing to a register will update the shadow register held by the library and then push the result to the driver.
+```cpp
+uint32_t my_ihold_irun = 0x140C; // Set IRUN to 20 (DEC) and IHOLD to 12 (DEC)
+driver.IHOLD_IRUN(my_ihold_irun);
+```
+
+## Reading from a register
+Writing to a register will return a boolean value indicating whether the CRC was valid.
+You need to give the function an address to the 32bit variable into which the function will store the response.
+```cpp
+uint32_t data;
+driver.DRV_STATUS(&data);
+Serial.println(data, BIN);
+```
+
+## Using the functions
+All functions to Read and Write and Write-only registers provide both Read and Write capabilities.
+If the register is Write-only, the value will be read from a shadow register held by the library.
+Read functions to Read registers will read the register value and then bit mask and bit shift it for you.
+All non-helper functions write the given bit pattern to the register.
+```cpp
+driver.tbl(0b10); // Is the same as...
+driver.tbl(2);    // And will set the blank time to 32
+// Read value from register
+uint8_t my_blank_time = driver.tbl();
 ```
 
 ## Helper functions
@@ -249,3 +281,18 @@ Function | Description
 bool PWM_SCALE(uint32_t*)		| 
 uint8_t pwm_scale_sum()			| Results of stealthChop amplitude regulator. These values<br>	can be used to monitor automatic PWM amplitude scaling (255=max. voltage).<p>					bit 7… 0 PWM_SCALE_SUM:<br>								Actual PWM duty cycle. This value is used for scaling<br>	the values CUR_A and CUR_B read from the sine wave table.<p>	bit 24… 16 PWM_SCALE_AUTO:<br>											9 Bit signed offset added to the calculated PWM duty<br>				cycle. This is the result of the automatic amplitude<br>				regulation based on current measurement.
 int16_t pwm_scale_auto()		| These automatically generated values can be read out in<br>	order to determine a default / power up setting for PWM_GRAD and PWM_OFS.<p>					bit 7… 0 PWM_OFS_AUTO:<br>								Automatically determined offset value<p>					bit 23… 16 PWM_GRAD_AUTO:<br>									Automatically determined gradient value
+
+
+## Bit positions and bit masks
+You can gain access to the register bit position and bit masks with 
+```cpp
+#include <TMC2208Stepper_REGDEFS.h>
+```
+Register addresses follow the patter REG_\<reg_name\>
+
+Bit positions are \<setting\>_bp
+
+Bit masks are \<setting\>_bm
+```cpp
+uint32_t my_gconf = (1 << SHAFT_bp) & SHAFT_bm;
+```
