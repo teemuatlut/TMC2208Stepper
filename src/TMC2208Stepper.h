@@ -17,6 +17,11 @@ class TMC2208Stepper {
 		float rms_current();
 		void microsteps(uint16_t ms);
 		uint16_t microsteps();
+		void setCurrent(uint16_t mA, float Rsense, float multiplier);
+		uint16_t getCurrent();
+		bool checkOT();
+		bool getOTPW();
+		void clear_otpw();
 		// RW: GCONF
 		void GCONF(uint32_t input);
 		void I_scale_analog(bool B);
@@ -186,6 +191,8 @@ class TMC2208Stepper {
 					CHOPCONF_sr = 		0x00000000UL,
 					PWMCONF_sr = 		0x00000000UL,
 					tmp_sr = 			0x00000000UL;
+
+		bool flag_otpw            = false;
 };
 
 #endif

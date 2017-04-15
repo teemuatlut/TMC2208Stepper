@@ -40,6 +40,23 @@ float TMC2208Stepper::rms_current() {
 	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421;
 }
 
+void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) { rms_current(mA, multiplier, Rsense); }
+uint16_t TMC2208Stepper::getCurrent() {	return rms_current(); }
+
+bool TMC2208Stepper::checkOT() {
+	uint32_t response;
+	DRV_STATUS(&response);
+	if (response & OTPW_bm) {
+		flag_otpw = true;
+		return true; // bit 26 for overtemperature warning flag
+	}
+	return false;
+}
+
+bool TMC2208Stepper::getOTPW() { return flag_otpw; }
+
+void TMC2208Stepper::clear_otpw() {	flag_otpw = false; }
+
 void TMC2208Stepper::microsteps(uint16_t ms) {
 	switch(ms) {
 		case 256: mres(0); break;
@@ -56,8 +73,7 @@ void TMC2208Stepper::microsteps(uint16_t ms) {
 }
 
 uint16_t TMC2208Stepper::microsteps() {
-	uint8_t ms = mres();
-	switch(ms) {
+	switch(mres()) {
 		case 0: return 256;
 		case 1: return 128;
 		case 2: return  64;
