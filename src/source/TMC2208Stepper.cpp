@@ -3,8 +3,9 @@
 #include "TMC2208Stepper_MACROS.h"
 
 //TMC2208Stepper::TMC2208Stepper(HardwareSerial& SR) : TMC_SERIAL(SR) {}
-TMC2208Stepper::TMC2208Stepper(Stream * SR) {
+TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx) {
 	TMC_SERIAL = SR;
+	write_only = !has_rx;
 }
 
 /*	
@@ -142,7 +143,13 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 }
 
 // GSTAT
-bool TMC2208Stepper::GSTAT(uint32_t *data) { READ_REG(GSTAT); }
+bool TMC2208Stepper::GSTAT(uint32_t *data) {
+	if (write_only) {
+		*data = GSTAT_sr;
+		return 0;
+	}
+	READ_REG(GSTAT);
+}
 void TMC2208Stepper::GSTAT(uint32_t input) {
 	GSTAT_sr = input;
 	UPDATE_REG(GSTAT);
@@ -195,7 +202,13 @@ bool TMC2208Stepper::dir()			{ GET_BYTE_R(IOIN, DIR);		}
 uint8_t TMC2208Stepper::version() 	{ GET_BYTE_R(IOIN, VERSION);	}
 
 // FACTORY_CONF
-bool TMC2208Stepper::FACTORY_CONF(uint32_t *data) { READ_REG(FACTORY_CONF); }
+bool TMC2208Stepper::FACTORY_CONF(uint32_t *data) {
+	if (write_only) {
+		*data = FACTORY_CONF_sr;
+		return 0;
+	}
+	READ_REG(FACTORY_CONF);
+}
 void TMC2208Stepper::FACTORY_CONF(uint32_t input) {
 	FACTORY_CONF_sr = input;
 	UPDATE_REG(FACTORY_CONF);

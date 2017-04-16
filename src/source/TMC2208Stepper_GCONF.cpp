@@ -2,7 +2,13 @@
 #include "TMC2208Stepper_MACROS.h"
 
 // GCONF
-bool TMC2208Stepper::GCONF(uint32_t *data) { READ_REG(GCONF); }
+bool TMC2208Stepper::GCONF(uint32_t *data) {
+	if (write_only) {
+		*data = GCONF_sr;
+		return 0;
+	}
+	READ_REG(GCONF);
+}
 void TMC2208Stepper::GCONF(uint32_t input) {
 	GCONF_sr = input;
 	UPDATE_REG(GCONF);

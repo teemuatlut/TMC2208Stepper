@@ -2,7 +2,13 @@
 #include "TMC2208Stepper_MACROS.h"
 
 // PWMCONF
-bool TMC2208Stepper::PWMCONF(uint32_t *data) { READ_REG(PWMCONF); }
+bool TMC2208Stepper::PWMCONF(uint32_t *data) {
+	if (write_only) {
+		*data = PWMCONF_sr;
+		return 0;
+	}
+	READ_REG(PWMCONF);
+}
 void TMC2208Stepper::PWMCONF(uint32_t input) {
 	PWMCONF_sr = input;
 	UPDATE_REG(PWMCONF);

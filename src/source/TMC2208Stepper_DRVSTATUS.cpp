@@ -2,6 +2,7 @@
 #include "TMC2208Stepper_MACROS.h"
 
 bool TMC2208Stepper::DRV_STATUS(uint32_t *data) {
+	if (write_only) return 1;
 	bool b = sendDatagram(TMC2208_READ|REG_DRV_STATUS, data);
 	return b;
 }
