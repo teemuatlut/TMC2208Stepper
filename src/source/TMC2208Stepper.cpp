@@ -35,6 +35,7 @@ void TMC2208Stepper::rms_current(uint16_t mA, float multiplier, float RS) {
 	}
 	irun(CS);
 	ihold(CS*multiplier);
+	mA_val = mA;
 }
 
 uint16_t TMC2208Stepper::rms_current() {
@@ -42,7 +43,7 @@ uint16_t TMC2208Stepper::rms_current() {
 }
 
 void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) { rms_current(mA, multiplier, Rsense); }
-uint16_t TMC2208Stepper::getCurrent() {	return rms_current(); }
+uint16_t TMC2208Stepper::getCurrent() {	return mA_val; }
 
 bool TMC2208Stepper::checkOT() {
 	uint32_t response;

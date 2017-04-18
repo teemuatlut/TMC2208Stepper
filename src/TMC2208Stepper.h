@@ -196,6 +196,7 @@ class TMC2208Stepper {
 
 		bool flag_otpw            = false;
 		bool write_only;
+		uint16_t mA_val = 0;
 };
 
 #endif
