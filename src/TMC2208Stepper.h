@@ -14,7 +14,7 @@ class TMC2208Stepper {
 		//TMC2208Stepper(HardwareSerial& serial);
 		TMC2208Stepper(Stream * serial, bool has_rx=true);
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
-		float rms_current();
+		uint16_t rms_current();
 		void microsteps(uint16_t ms);
 		uint16_t microsteps();
 		void setCurrent(uint16_t mA, float Rsense, float multiplier);

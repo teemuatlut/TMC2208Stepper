@@ -37,8 +37,8 @@ void TMC2208Stepper::rms_current(uint16_t mA, float multiplier, float RS) {
 	ihold(CS*multiplier);
 }
 
-float TMC2208Stepper::rms_current() {
-	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421;
+uint16_t TMC2208Stepper::rms_current() {
+	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421 * 1000;
 }
 
 void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) { rms_current(mA, multiplier, Rsense); }
