@@ -59,7 +59,7 @@ bool TMC2208Stepper::getOTPW() { return flag_otpw; }
 
 void TMC2208Stepper::clear_otpw() {	flag_otpw = false; }
 
-bool TMC2130Stepper::isEnabled() { return enn() && toff(); }
+bool TMC2208Stepper::isEnabled() { return enn() && toff(); }
 
 void TMC2208Stepper::microsteps(uint16_t ms) {
 	switch(ms) {
