@@ -88,6 +88,7 @@ uint16_t TMC2208Stepper::microsteps() {
 		case 7: return   2;
 		case 8: return   0;
 	}
+	return 0;
 }
 
 uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
