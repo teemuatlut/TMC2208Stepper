@@ -6,6 +6,11 @@ bool TMC2208Stepper::DRV_STATUS(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_DRV_STATUS, data);
 	return b;
 }
+uint32_t TMC2208Stepper::DRV_STATUS() {
+	uint32_t data = 0;
+	DRV_STATUS(&data);
+	return data;
+}
 
 bool 		TMC2208Stepper::otpw()		{ GET_BYTE_R(DRV_STATUS, OTPW); 	}
 bool 		TMC2208Stepper::ot() 		{ GET_BYTE_R(DRV_STATUS, OT); 	 	}

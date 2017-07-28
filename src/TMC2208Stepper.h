@@ -98,6 +98,7 @@ class TMC2208Stepper {
 		// W: TPWMTHRS
 		void TPWMTHRS(uint32_t input);
 		bool TPWMTHRS(uint32_t *data);
+		uint32_t TPWMTHRS();
 		// W: VACTUAL
 		void VACTUAL(uint32_t input);
 		bool VACTUAL(uint32_t *data);
@@ -132,6 +133,7 @@ class TMC2208Stepper {
 		bool diss2vs();
 		// R: DRV_STATUS
 		bool DRV_STATUS(uint32_t *data);
+		uint32_t DRV_STATUS();
 		bool otpw();
 		bool ot();
 		bool s2ga();

@@ -263,6 +263,11 @@ bool TMC2208Stepper::TPWMTHRS(uint32_t *data) {
 	data = &TPWMTHRS_sr;
 	return 0;
 }
+uint32_t TMC2208Stepper::TPWMTHRS() {
+	uint32_t data = 0;
+	TPWMTHRS(&data);
+	return data;
+}
 
 // VACTUAL
 void TMC2208Stepper::VACTUAL(uint32_t input) {
