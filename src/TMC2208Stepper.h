@@ -114,6 +114,7 @@ class TMC2208Stepper {
 		void hstrt(uint8_t B);
 		void hend(uint8_t B);
 		void tbl(uint8_t B);
+		void blank_time(uint8_t B);
 		void vsense(bool B);
 		void mres(uint16_t B);
 		void intpol(bool B);
@@ -125,6 +126,7 @@ class TMC2208Stepper {
 		uint8_t hstrt();
 		uint8_t hend();
 		uint8_t tbl();
+		uint8_t blank_time();
 		bool vsense();
 		uint8_t mres();
 		bool intpol();

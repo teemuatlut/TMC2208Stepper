@@ -91,6 +91,25 @@ uint16_t TMC2208Stepper::microsteps() {
 	return 0;
 }
 
+void TMC2208Stepper::blank_time(uint8_t B) {
+	switch (B) {
+		case 16: tbl(0b00); break;
+		case 24: tbl(0b01); break;
+		case 36: tbl(0b10); break;
+		case 54: tbl(0b11); break;
+	}
+}
+
+uint8_t TMC2208Stepper::blank_time() {
+	switch (tbl()) {
+		case 0b00: return 16;
+		case 0b01: return 24;
+		case 0b10: return 36;
+		case 0b11: return 54;
+	}
+	return 0;
+}
+
 uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
 	uint8_t crc = 0;
 	for (uint8_t i = 0; i < len; i++) {
