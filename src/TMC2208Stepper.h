@@ -50,6 +50,7 @@ class TMC2208Stepper {
 		void drv_err(bool B);
 		void uv_cp(bool B);
 		bool GSTAT(uint32_t *data);
+		uint8_t GSTAT();
 		bool reset();
 		bool drv_err();
 		bool uv_cp();

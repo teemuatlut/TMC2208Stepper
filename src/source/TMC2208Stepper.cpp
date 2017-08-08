@@ -177,6 +177,11 @@ void TMC2208Stepper::GSTAT(uint32_t input) {
 	GSTAT_sr = input;
 	UPDATE_REG(GSTAT);
 }
+uint8_t TMC2208Stepper::GSTAT() {
+	uint32_t data = 0;
+	GSTAT(&data);
+	return data;
+}
 
 void TMC2208Stepper::reset(bool B)	{ MOD_REG(GSTAT, RESET); 	}
 void TMC2208Stepper::drv_err(bool B){ MOD_REG(GSTAT, DRV_ERR); 	}
