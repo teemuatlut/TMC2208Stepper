@@ -34,3 +34,9 @@ bool 	TMC2208Stepper::intpol()	{ GET_BYTE(CHOPCONF, INTPOL); 	}
 bool 	TMC2208Stepper::dedge()		{ GET_BYTE(CHOPCONF, DEDGE);  	}
 bool 	TMC2208Stepper::diss2g()	{ GET_BYTE(CHOPCONF, DISS2G); 	}
 bool 	TMC2208Stepper::diss2vs()	{ GET_BYTE(CHOPCONF, DISS2VS);	}
+
+void TMC2208Stepper::hysterisis_end(int8_t value) { hend(value+3); }
+int8_t TMC2208Stepper::hysterisis_end() { return hend()-3; };
+
+void TMC2208Stepper::hysterisis_start(uint8_t value) { hstrt(value-1); }
+uint8_t TMC2208Stepper::hysterisis_start() { return hstrt()+1; }
