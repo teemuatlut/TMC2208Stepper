@@ -185,6 +185,7 @@ class TMC2208Stepper {
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		uint16_t replyDelay = 10;
+		bool flag_otpw = false;
 	private:
 		Stream * TMC_SERIAL;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
@@ -204,7 +205,6 @@ class TMC2208Stepper {
 					PWMCONF_sr = 		0x00000000UL,
 					tmp_sr = 			0x00000000UL;
 
-		bool flag_otpw            = false;
 		bool write_only;
 		uint16_t mA_val = 0;
 };
