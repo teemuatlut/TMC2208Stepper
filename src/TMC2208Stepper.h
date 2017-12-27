@@ -12,7 +12,8 @@
 class TMC2208Stepper {
 	public:
 		//TMC2208Stepper(HardwareSerial& serial);
-		TMC2208Stepper(Stream * serial, bool has_rx=true);
+		//TMC2208Stepper(Stream * serial, bool has_rx=true);
+		TMC2208Stepper(Stream * serial, bool has_rx=true, uint8_t cs_pin=0);
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		uint16_t rms_current();
 		void microsteps(uint16_t ms);
@@ -182,6 +183,7 @@ class TMC2208Stepper {
 
 		bool isWriteOnly() {return write_only;}
 
+		uint8_t cs_pin() {return cs_pin_val;}
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		uint16_t replyDelay = 10;
@@ -207,6 +209,7 @@ class TMC2208Stepper {
 
 		bool write_only;
 		uint16_t mA_val = 0;
+		uint8_t cs_pin_val = 0;
 };
 
 #endif
