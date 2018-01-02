@@ -144,6 +144,9 @@ void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 	for(int i=0; i<=len; i++){
 		bytesWritten += TMC_SERIAL->write(datagram[i]);
 	}
+
+	TMC_SERIAL->flush(); // Wait for TX to finish
+
 	if (cs_pin_val > 0) {
 		digitalWrite ( cs_pin_val, LOW );
 	}
