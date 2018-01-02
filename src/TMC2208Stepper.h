@@ -114,9 +114,9 @@ class TMC2208Stepper {
 		void CHOPCONF(uint32_t input);
 		void toff(uint8_t B);
 		void hstrt(uint8_t B);
-		void hysterisis_start(uint8_t value);
+		void hysteresis_start(uint8_t value);
 		void hend(uint8_t B);
-		void hysterisis_end(int8_t value);
+		void hysteresis_end(int8_t value);
 		void tbl(uint8_t B);
 		void blank_time(uint8_t B);
 		void vsense(bool B);
@@ -128,9 +128,9 @@ class TMC2208Stepper {
 		bool CHOPCONF(uint32_t *data);
 		uint8_t toff();
 		uint8_t hstrt();
-		uint8_t hysterisis_start();
+		uint8_t hysteresis_start();
 		uint8_t hend();
-		int8_t hysterisis_end();
+		int8_t hysteresis_end();
 		uint8_t tbl();
 		uint8_t blank_time();
 		bool vsense();
