@@ -27,7 +27,7 @@ void setup() {
 	pinMode(DIR_PIN, OUTPUT);
 
 	driver.pdn_disable(1);													// Use PDN/UART pin for communication
-	driver.rms_current(500, 0.11, 0.5);							// Set driver current = 500mA, RSENSE = 0.11 and 0.5 multiplier for hold current.
+	driver.rms_current(500, 0.5, 0.11);							// Set driver current = 500mA, 0.5 multiplier for hold current and RSENSE = 0.11.
 	driver.toff(0x2);																// Enable driver
 
 	// Set stepper interrupt
