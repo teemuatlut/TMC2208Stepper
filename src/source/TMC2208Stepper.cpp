@@ -3,8 +3,9 @@
 #include "TMC2208Stepper_MACROS.h"
 
 //TMC2208Stepper::TMC2208Stepper(HardwareSerial& SR) : TMC_SERIAL(SR) {}
-TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx) {
-	TMC_SERIAL = SR;
+template<class SERIAL_TYPE>
+TMC2208Stepper<SERIAL_TYPE>::TMC2208Stepper(SERIAL_TYPE * ser, bool has_rx) {
+	tmc_serial = ser;
 	write_only = !has_rx;
 }
 
@@ -23,7 +24,7 @@ TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx) {
 	CS = 32*sqrt(2)*1.64*(0.10+0.02)/0.325 - 1 = 26.4
 	CS = 26
 */
-void TMC2208Stepper::rms_current(uint16_t mA, float multiplier, float RS) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::rms_current(uint16_t mA, float multiplier, float RS) {
 	Rsense = RS;
 	uint8_t CS = 32.0*1.41421*mA/1000.0*(Rsense+0.02)/0.325 - 1;
 	// If Current Scale is too low, turn on high sensitivity R_sense and calculate again
@@ -38,14 +39,14 @@ void TMC2208Stepper::rms_current(uint16_t mA, float multiplier, float RS) {
 	mA_val = mA;
 }
 
-uint16_t TMC2208Stepper::rms_current() {
+template<class SERIAL_TYPE> uint16_t TMC2208Stepper<SERIAL_TYPE>::rms_current() {
 	return (float)(irun()+1)/32.0 * (vsense()?0.180:0.325)/(Rsense+0.02) / 1.41421 * 1000;
 }
 
-void TMC2208Stepper::setCurrent(uint16_t mA, float Rsense, float multiplier) { rms_current(mA, multiplier, Rsense); }
-uint16_t TMC2208Stepper::getCurrent() {	return mA_val; }
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::setCurrent(uint16_t mA, float Rsense, float multiplier) { rms_current(mA, multiplier, Rsense); }
+template<class SERIAL_TYPE> uint16_t TMC2208Stepper<SERIAL_TYPE>::getCurrent() {	return mA_val; }
 
-bool TMC2208Stepper::checkOT() {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::checkOT() {
 	uint32_t response;
 	DRV_STATUS(&response);
 	if (response & OTPW_bm) {
@@ -55,13 +56,13 @@ bool TMC2208Stepper::checkOT() {
 	return false;
 }
 
-bool TMC2208Stepper::getOTPW() { return flag_otpw; }
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::getOTPW() { return flag_otpw; }
 
-void TMC2208Stepper::clear_otpw() {	flag_otpw = false; }
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::clear_otpw() {	flag_otpw = false; }
 
-bool TMC2208Stepper::isEnabled() { return enn() && toff(); }
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::isEnabled() { return enn() && toff(); }
 
-void TMC2208Stepper::microsteps(uint16_t ms) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::microsteps(uint16_t ms) {
 	switch(ms) {
 		case 256: mres(0); break;
 		case 128: mres(1); break;
@@ -76,7 +77,7 @@ void TMC2208Stepper::microsteps(uint16_t ms) {
 	}
 }
 
-uint16_t TMC2208Stepper::microsteps() {
+template<class SERIAL_TYPE> uint16_t TMC2208Stepper<SERIAL_TYPE>::microsteps() {
 	switch(mres()) {
 		case 0: return 256;
 		case 1: return 128;
@@ -91,7 +92,7 @@ uint16_t TMC2208Stepper::microsteps() {
 	return 0;
 }
 
-void TMC2208Stepper::blank_time(uint8_t B) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::blank_time(uint8_t B) {
 	switch (B) {
 		case 16: tbl(0b00); break;
 		case 24: tbl(0b01); break;
@@ -100,7 +101,7 @@ void TMC2208Stepper::blank_time(uint8_t B) {
 	}
 }
 
-uint8_t TMC2208Stepper::blank_time() {
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::blank_time() {
 	switch (tbl()) {
 		case 0b00: return 16;
 		case 0b01: return 24;
@@ -110,7 +111,7 @@ uint8_t TMC2208Stepper::blank_time() {
 	return 0;
 }
 
-uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::calcCRC(uint8_t datagram[], uint8_t len) {
 	uint8_t crc = 0;
 	for (uint8_t i = 0; i < len; i++) {
 		uint8_t currentByte = datagram[i];
@@ -127,31 +128,31 @@ uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
 	return crc;
 }
 
-void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, (uint8_t)(regVal>>24), (uint8_t)(regVal>>16), (uint8_t)(regVal>>8), (uint8_t)(regVal>>0), 0x00};
 
 	datagram[len] = calcCRC(datagram, len);
 
 	for(int i=0; i<=len; i++){
-		bytesWritten += TMC_SERIAL->write(datagram[i]);
+		bytesWritten += tmc_serial->write(datagram[i]);
 	}
 }
 
-bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, 0x00};
 	datagram[len] = calcCRC(datagram, len);
 
-	while (TMC_SERIAL->available() > 0) TMC_SERIAL->read(); // Flush
+	while (tmc_serial->available() > 0) tmc_serial->read(); // Flush
 
-	for(int i=0; i<=len; i++) TMC_SERIAL->write(datagram[i]);
+	for(int i=0; i<=len; i++) tmc_serial->write(datagram[i]);
 	
-	TMC_SERIAL->flush(); // Wait for TX to finish
-	for(int byte=0; byte<4; byte++) TMC_SERIAL->read(); // Flush bytes written
+	tmc_serial->flush(); // Wait for TX to finish
+	for(int byte=0; byte<4; byte++) tmc_serial->read(); // Flush bytes written
 	delay(replyDelay);
 
 	uint64_t out = 0x00000000UL;
-	while(TMC_SERIAL->available() > 0) {
-		uint8_t res = TMC_SERIAL->read();
+	while(tmc_serial->available() > 0) {
+		uint8_t res = tmc_serial->read();
 		out <<= 8;
 		out |= res&0xFF;
 	}
@@ -166,162 +167,162 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 }
 
 // GSTAT
-bool TMC2208Stepper::GSTAT(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::GSTAT(uint32_t *data) {
 	if (write_only) {
 		*data = GSTAT_sr;
 		return 0;
 	}
 	READ_REG(GSTAT);
 }
-void TMC2208Stepper::GSTAT(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::GSTAT(uint32_t input) {
 	GSTAT_sr = input;
 	UPDATE_REG(GSTAT);
 }
-uint8_t TMC2208Stepper::GSTAT() {
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::GSTAT() {
 	uint32_t data = 0;
 	GSTAT(&data);
 	return data;
 }
 
-void TMC2208Stepper::reset(bool B)	{ MOD_REG(GSTAT, RESET); 	}
-void TMC2208Stepper::drv_err(bool B){ MOD_REG(GSTAT, DRV_ERR); 	}
-void TMC2208Stepper::uv_cp(bool B)	{ MOD_REG(GSTAT, UV_CP); 	}
-bool TMC2208Stepper::reset()		{ GET_BYTE(GSTAT, RESET);	}
-bool TMC2208Stepper::drv_err()		{ GET_BYTE(GSTAT, DRV_ERR);	}
-bool TMC2208Stepper::uv_cp()		{ GET_BYTE(GSTAT, UV_CP);	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::reset(bool B)	{ MOD_REG(GSTAT, RESET); 	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::drv_err(bool B){ MOD_REG(GSTAT, DRV_ERR); 	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::uv_cp(bool B)	{ MOD_REG(GSTAT, UV_CP); 	}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::reset()		{ GET_BYTE(GSTAT, RESET);	}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::drv_err()		{ GET_BYTE(GSTAT, DRV_ERR);	}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::uv_cp()		{ GET_BYTE(GSTAT, UV_CP);	}
 
 // IFCNT
-bool TMC2208Stepper::IFCNT(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::IFCNT(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_IFCNT, data);
 	return b;
 }
 
 // SLAVECONF
-void TMC2208Stepper::SLAVECONF(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::SLAVECONF(uint32_t input) {
 	SLAVECONF_sr = input&SLAVECONF_bm;
 	UPDATE_REG(SLAVECONF);
 }
-bool TMC2208Stepper::SLAVECONF(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::SLAVECONF(uint32_t *data) {
 	*data = SLAVECONF_sr;
 	return 0;
 }
-void TMC2208Stepper::senddelay(uint8_t B) 	{ MOD_REG(SLAVECONF, SENDDELAY);	}
-uint8_t TMC2208Stepper::senddelay() 		{ GET_BYTE(SLAVECONF, SENDDELAY); 	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::senddelay(uint8_t B) 	{ MOD_REG(SLAVECONF, SENDDELAY);	}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::senddelay() 		{ GET_BYTE(SLAVECONF, SENDDELAY); 	}
 
 // OTP_PROG
-void TMC2208Stepper::OTP_PROG(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::OTP_PROG(uint32_t input) {
 	OTP_PROG_sr = input;
 	UPDATE_REG(OTP_PROG);
 }
 
 // IOIN
-bool TMC2208Stepper::IOIN(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::IOIN(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_IOIN, data);
 	return b;
 }
-bool TMC2208Stepper::enn()			{ GET_BYTE_R(IOIN, ENN);		}
-bool TMC2208Stepper::ms1()			{ GET_BYTE_R(IOIN, MS1);		}
-bool TMC2208Stepper::ms2()			{ GET_BYTE_R(IOIN, MS2);		}
-bool TMC2208Stepper::diag()			{ GET_BYTE_R(IOIN, DIAG);		}
-bool TMC2208Stepper::pdn_uart()		{ GET_BYTE_R(IOIN, PDN_UART);	}
-bool TMC2208Stepper::step()			{ GET_BYTE_R(IOIN, STEP);		}
-bool TMC2208Stepper::sel_a()		{ GET_BYTE_R(IOIN, SEL_A);		}
-bool TMC2208Stepper::dir()			{ GET_BYTE_R(IOIN, DIR);		}
-uint8_t TMC2208Stepper::version() 	{ GET_BYTE_R(IOIN, VERSION);	}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::enn()			{ GET_BYTE_R(IOIN, ENN);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::ms1()			{ GET_BYTE_R(IOIN, MS1);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::ms2()			{ GET_BYTE_R(IOIN, MS2);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::diag()			{ GET_BYTE_R(IOIN, DIAG);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::pdn_uart()		{ GET_BYTE_R(IOIN, PDN_UART);	}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::step()			{ GET_BYTE_R(IOIN, STEP);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::sel_a()		{ GET_BYTE_R(IOIN, SEL_A);		}
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::dir()			{ GET_BYTE_R(IOIN, DIR);		}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::version() 	{ GET_BYTE_R(IOIN, VERSION);	}
 
 // FACTORY_CONF
-bool TMC2208Stepper::FACTORY_CONF(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::FACTORY_CONF(uint32_t *data) {
 	if (write_only) {
 		*data = FACTORY_CONF_sr;
 		return 0;
 	}
 	READ_REG(FACTORY_CONF);
 }
-void TMC2208Stepper::FACTORY_CONF(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::FACTORY_CONF(uint32_t input) {
 	FACTORY_CONF_sr = input;
 	UPDATE_REG(FACTORY_CONF);
 }
-void TMC2208Stepper::fclktrim(uint8_t B){ MOD_REG(FACTORY_CONF, FCLKTRIM);	}
-void TMC2208Stepper::ottrim(uint8_t B)	{ MOD_REG(FACTORY_CONF, OTTRIM);	}
-uint8_t TMC2208Stepper::fclktrim()		{ GET_BYTE(FACTORY_CONF, FCLKTRIM);	}
-uint8_t TMC2208Stepper::ottrim()		{ GET_BYTE(FACTORY_CONF, OTTRIM);	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::fclktrim(uint8_t B){ MOD_REG(FACTORY_CONF, FCLKTRIM);	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::ottrim(uint8_t B)	{ MOD_REG(FACTORY_CONF, OTTRIM);	}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::fclktrim()		{ GET_BYTE(FACTORY_CONF, FCLKTRIM);	}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::ottrim()		{ GET_BYTE(FACTORY_CONF, OTTRIM);	}
 
 // IHOLD_IRUN
-void TMC2208Stepper::IHOLD_IRUN(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::IHOLD_IRUN(uint32_t input) {
 	IHOLD_IRUN_sr = input;
 	UPDATE_REG(IHOLD_IRUN);
 }
-bool TMC2208Stepper::IHOLD_IRUN(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::IHOLD_IRUN(uint32_t *data) {
 	*data = IHOLD_IRUN_sr;
 	return 0;
 }
-void TMC2208Stepper::ihold(uint8_t B) 		{ MOD_REG(IHOLD_IRUN, IHOLD);		}
-void TMC2208Stepper::irun(uint8_t B)  		{ MOD_REG(IHOLD_IRUN, IRUN); 		}
-void TMC2208Stepper::iholddelay(uint8_t B)	{ MOD_REG(IHOLD_IRUN, IHOLDDELAY); 	}
-uint8_t TMC2208Stepper::ihold() 			{ GET_BYTE(IHOLD_IRUN, IHOLD);		}
-uint8_t TMC2208Stepper::irun()  			{ GET_BYTE(IHOLD_IRUN, IRUN); 		}
-uint8_t TMC2208Stepper::iholddelay()  		{ GET_BYTE(IHOLD_IRUN, IHOLDDELAY);	}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::ihold(uint8_t B) 		{ MOD_REG(IHOLD_IRUN, IHOLD);		}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::irun(uint8_t B)  		{ MOD_REG(IHOLD_IRUN, IRUN); 		}
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::iholddelay(uint8_t B)	{ MOD_REG(IHOLD_IRUN, IHOLDDELAY); 	}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::ihold() 			{ GET_BYTE(IHOLD_IRUN, IHOLD);		}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::irun()  			{ GET_BYTE(IHOLD_IRUN, IRUN); 		}
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::iholddelay()  		{ GET_BYTE(IHOLD_IRUN, IHOLDDELAY);	}
 
 // TPOWERDOWN
-void TMC2208Stepper::TPOWERDOWN(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::TPOWERDOWN(uint32_t input) {
 	TPOWERDOWN_sr = input;
 	UPDATE_REG(TPOWERDOWN);
 }
-bool TMC2208Stepper::TPOWERDOWN(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::TPOWERDOWN(uint32_t *data) {
 	*data = TPOWERDOWN_sr;
 	return 0;
 }
 
 // TSTEP
-bool TMC2208Stepper::TSTEP(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::TSTEP(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_TSTEP, data);
 	return b;
 }
 
 // TPWMTHRS
-void TMC2208Stepper::TPWMTHRS(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::TPWMTHRS(uint32_t input) {
 	TPWMTHRS_sr = input;
 	UPDATE_REG(TPWMTHRS);
 }
-bool TMC2208Stepper::TPWMTHRS(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::TPWMTHRS(uint32_t *data) {
 	*data = TPWMTHRS_sr;
 	return 0;
 }
-uint32_t TMC2208Stepper::TPWMTHRS() {
+template<class SERIAL_TYPE> uint32_t TMC2208Stepper<SERIAL_TYPE>::TPWMTHRS() {
 	return TPWMTHRS_sr;
 }
 
 // VACTUAL
-void TMC2208Stepper::VACTUAL(uint32_t input) {
+template<class SERIAL_TYPE> void TMC2208Stepper<SERIAL_TYPE>::VACTUAL(uint32_t input) {
 	VACTUAL_sr = input;
 	UPDATE_REG(VACTUAL);
 }
-bool TMC2208Stepper::VACTUAL(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::VACTUAL(uint32_t *data) {
 	*data = VACTUAL_sr;
 	return 0;
 }
 
 // MSCNT
-bool TMC2208Stepper::MSCNT(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::MSCNT(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_MSCNT, data);
 	return b;
 }
 
 // MSCURACT
-bool TMC2208Stepper::MSCURACT(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::MSCURACT(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_MSCURACT, data);
 	return b;
 }
-uint16_t TMC2208Stepper::cur_a() { GET_BYTE_R(MSCURACT, CUR_A);	}
-uint16_t TMC2208Stepper::cur_b() { GET_BYTE_R(MSCURACT, CUR_B);	}
+template<class SERIAL_TYPE> uint16_t TMC2208Stepper<SERIAL_TYPE>::cur_a() { GET_BYTE_R(MSCURACT, CUR_A);	}
+template<class SERIAL_TYPE> uint16_t TMC2208Stepper<SERIAL_TYPE>::cur_b() { GET_BYTE_R(MSCURACT, CUR_B);	}
 
 // MSCNT
-bool TMC2208Stepper::PWM_SCALE(uint32_t *data) {
+template<class SERIAL_TYPE> bool TMC2208Stepper<SERIAL_TYPE>::PWM_SCALE(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_PWM_SCALE, data);
 	return b;
 }
-uint8_t TMC2208Stepper::pwm_scale_sum() { GET_BYTE_R(PWM_SCALE, PWM_SCALE_SUM); }
-int16_t TMC2208Stepper::pwm_scale_auto() {
+template<class SERIAL_TYPE> uint8_t TMC2208Stepper<SERIAL_TYPE>::pwm_scale_sum() { GET_BYTE_R(PWM_SCALE, PWM_SCALE_SUM); }
+template<class SERIAL_TYPE> int16_t TMC2208Stepper<SERIAL_TYPE>::pwm_scale_auto() {
 	// Not two's complement? 9nth bit determines sign
 	uint32_t d;
 	PWM_SCALE(&d);

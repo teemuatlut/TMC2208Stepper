@@ -1,18 +1,17 @@
-#ifndef TMC2208Stepper_h
-#define TMC2208Stepper_h
+#pragma once
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include <Arduino.h>
 #endif
 
-#include <Stream.h>
+#include <SoftwareSerial.h>
 //#include "source/TMC2208Stepper_REGDEFS.h"
 
-
+template<class SERIAL_TYPE>
 class TMC2208Stepper {
 	public:
 		//TMC2208Stepper(HardwareSerial& serial);
-		TMC2208Stepper(Stream * serial, bool has_rx=true);
+		TMC2208Stepper(SERIAL_TYPE * serial, bool has_rx=true);
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		uint16_t rms_current();
 		void microsteps(uint16_t ms);
@@ -187,7 +186,7 @@ class TMC2208Stepper {
 		uint16_t replyDelay = 10;
 		bool flag_otpw = false;
 	private:
-		Stream * TMC_SERIAL;
+		SERIAL_TYPE * tmc_serial;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
 		bool sendDatagram(uint8_t addr, uint32_t *data, uint8_t len=3);
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
@@ -209,4 +208,5 @@ class TMC2208Stepper {
 		uint16_t mA_val = 0;
 };
 
-#endif
+template class TMC2208Stepper<SoftwareSerial>;
+template class TMC2208Stepper<HardwareSerial>;
