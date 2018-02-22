@@ -3,9 +3,14 @@
 #include "TMC2208Stepper_MACROS.h"
 
 //TMC2208Stepper::TMC2208Stepper(HardwareSerial& SR) : TMC_SERIAL(SR) {}
-TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx) {
+TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx, uint8_t cs_pin) {
 	TMC_SERIAL = SR;
 	write_only = !has_rx;
+	cs_pin_val = cs_pin;
+	if (cs_pin_val > 0) {
+		pinMode(cs_pin_val, OUTPUT);
+		digitalWrite(cs_pin_val, LOW);
+	}
 }
 
 /*	
@@ -128,6 +133,10 @@ uint8_t TMC2208Stepper::calcCRC(uint8_t datagram[], uint8_t len) {
 }
 
 void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
+	if (cs_pin_val > 0) {
+		digitalWrite ( cs_pin_val, HIGH );
+	}
+
 	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, (uint8_t)(regVal>>24), (uint8_t)(regVal>>16), (uint8_t)(regVal>>8), (uint8_t)(regVal>>0), 0x00};
 
 	datagram[len] = calcCRC(datagram, len);
@@ -135,9 +144,19 @@ void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 	for(int i=0; i<=len; i++){
 		bytesWritten += TMC_SERIAL->write(datagram[i]);
 	}
+
+	TMC_SERIAL->flush(); // Wait for TX to finish
+
+	if (cs_pin_val > 0) {
+		digitalWrite ( cs_pin_val, LOW );
+	}
 }
 
 bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
+	if (cs_pin_val > 0) {
+		digitalWrite ( cs_pin_val, HIGH );
+	}
+
 	uint8_t datagram[] = {TMC2208_SYNC, TMC2208_SLAVE_ADDR, addr, 0x00};
 	datagram[len] = calcCRC(datagram, len);
 
@@ -154,6 +173,10 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 		uint8_t res = TMC_SERIAL->read();
 		out <<= 8;
 		out |= res&0xFF;
+	}
+
+	if (cs_pin_val > 0) {
+		digitalWrite ( cs_pin_val, LOW );
 	}
 
 	uint8_t out_datagram[] = {(uint8_t)(out>>56), (uint8_t)(out>>48), (uint8_t)(out>>40), (uint8_t)(out>>32), (uint8_t)(out>>24), (uint8_t)(out>>16), (uint8_t)(out>>8), (uint8_t)(out>>0)};

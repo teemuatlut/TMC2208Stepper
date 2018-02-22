@@ -12,7 +12,8 @@
 class TMC2208Stepper {
 	public:
 		//TMC2208Stepper(HardwareSerial& serial);
-		TMC2208Stepper(Stream * serial, bool has_rx=true);
+		//TMC2208Stepper(Stream * serial, bool has_rx=true);
+		TMC2208Stepper(Stream * serial, bool has_rx=true, uint8_t cs_pin=0);
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		uint16_t rms_current();
 		void microsteps(uint16_t ms);
@@ -114,9 +115,9 @@ class TMC2208Stepper {
 		void CHOPCONF(uint32_t input);
 		void toff(uint8_t B);
 		void hstrt(uint8_t B);
-		void hysterisis_start(uint8_t value);
+		void hysteresis_start(uint8_t value);
 		void hend(uint8_t B);
-		void hysterisis_end(int8_t value);
+		void hysteresis_end(int8_t value);
 		void tbl(uint8_t B);
 		void blank_time(uint8_t B);
 		void vsense(bool B);
@@ -128,9 +129,9 @@ class TMC2208Stepper {
 		bool CHOPCONF(uint32_t *data);
 		uint8_t toff();
 		uint8_t hstrt();
-		uint8_t hysterisis_start();
+		uint8_t hysteresis_start();
 		uint8_t hend();
-		int8_t hysterisis_end();
+		int8_t hysteresis_end();
 		uint8_t tbl();
 		uint8_t blank_time();
 		bool vsense();
@@ -183,6 +184,7 @@ class TMC2208Stepper {
 
 		bool isWriteOnly() {return write_only;}
 
+		uint8_t cs_pin() {return cs_pin_val;}
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		uint16_t replyDelay = 10;
@@ -209,6 +211,7 @@ class TMC2208Stepper {
 
 		bool write_only;
 		uint16_t mA_val = 0;
+		uint8_t cs_pin_val = 0;
 };
 
 #endif
