@@ -6,14 +6,14 @@
 #endif
 
 #include <Stream.h>
-//#include "source/TMC2208Stepper_REGDEFS.h"
+#include <SoftwareSerial.h>
 
 #define TMC2208STEPPER_VERSION 0x000101 // v0.1.1
 
 class TMC2208Stepper {
 	public:
-		//TMC2208Stepper(HardwareSerial& serial);
-		TMC2208Stepper(Stream * serial, bool has_rx=true);
+		TMC2208Stepper(Stream * SerialPort, bool has_rx=true);
+		TMC2208Stepper(uint16_t SW_RX_pin, uint16_t SW_TX_pin, bool has_rx=true);
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		uint16_t rms_current();
 		void microsteps(uint16_t ms);
@@ -196,7 +196,7 @@ class TMC2208Stepper {
 
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
-		uint16_t replyDelay = 10;
+		uint16_t replyDelay = 5;
 		bool flag_otpw = false;
 
 		// Stored settings for Marlin LCD
@@ -209,7 +209,8 @@ class TMC2208Stepper {
 			uint16_t sg_result = 0;
 		} stored;
 	private:
-		Stream * TMC_SERIAL;
+		Stream * HWSerial = NULL;
+		SoftwareSerial * SWSerial = NULL;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
 		bool sendDatagram(uint8_t addr, uint32_t *data, uint8_t len=3);
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
@@ -230,6 +231,7 @@ class TMC2208Stepper {
 					tmp_sr = 			0x00000000UL;
 
 		bool write_only;
+		bool uses_sw_serial;
 		uint16_t mA_val = 0;
 };
 
