@@ -6,6 +6,10 @@
 TMC2208Stepper::TMC2208Stepper(Stream * SR, bool has_rx) {
 	TMC_SERIAL = SR;
 	write_only = !has_rx;
+
+void TMC2208Stepper::beginSerial(uint32_t baudrate) {
+	if (uses_sw_serial) static_cast<SoftwareSerial*>(SerialObject)->begin(baudrate);
+	else static_cast<HardwareSerial*>(SerialObject)->begin(baudrate);
 }
 
 /*	

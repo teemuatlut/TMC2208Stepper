@@ -26,6 +26,7 @@ class TMC2208Stepper {
 		bool isEnabled();
 		void push();
 		uint8_t test_connection();
+		void beginSerial(uint32_t baudrate);
 		// RW: GCONF
 		void GCONF(uint32_t input);
 		void I_scale_analog(bool B);
