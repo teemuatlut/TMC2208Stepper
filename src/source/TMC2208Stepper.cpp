@@ -55,6 +55,16 @@ bool TMC2208Stepper::checkOT() {
 	return false;
 }
 
+uint8_t TMC2208Stepper::test_connection() {
+	uint32_t drv_status;
+	DRV_STATUS(&drv_status);
+	switch (drv_status) {
+	    case 0xFFFFFFFF: return 1;
+	    case 0: return 2;
+	    default: return 0;
+	}
+}
+
 bool TMC2208Stepper::getOTPW() { return flag_otpw; }
 
 void TMC2208Stepper::clear_otpw() {	flag_otpw = false; }
