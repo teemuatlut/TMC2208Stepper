@@ -23,6 +23,7 @@ class TMC2208Stepper {
 		bool getOTPW();
 		void clear_otpw();
 		bool isEnabled();
+		void push();
 		// RW: GCONF
 		void GCONF(uint32_t input);
 		void I_scale_analog(bool B);

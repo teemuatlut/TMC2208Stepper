@@ -61,6 +61,18 @@ void TMC2208Stepper::clear_otpw() {	flag_otpw = false; }
 
 bool TMC2208Stepper::isEnabled() { return enn() && toff(); }
 
+void TMC2208Stepper::push() {
+	GCONF(GCONF_sr);
+	IHOLD_IRUN(IHOLD_IRUN_sr);
+	SLAVECONF(SLAVECONF_sr);
+	FACTORY_CONF(FACTORY_CONF_sr);
+	TPOWERDOWN(TPOWERDOWN_sr);
+	TPWMTHRS(TPWMTHRS_sr);
+	VACTUAL(VACTUAL_sr);
+	CHOPCONF(CHOPCONF_sr);
+	PWMCONF(PWMCONF_sr);
+}
+
 void TMC2208Stepper::microsteps(uint16_t ms) {
 	switch(ms) {
 		case 256: mres(0); break;
