@@ -8,6 +8,8 @@
 #include <Stream.h>
 //#include "source/TMC2208Stepper_REGDEFS.h"
 
+#define TMC208STEPPER_VERSION 0x000004; // v0.0.4
+const uint32_t TMC2130Stepper_version = TMC208STEPPER_VERSION;
 
 class TMC2208Stepper {
 	public:
