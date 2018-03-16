@@ -80,9 +80,9 @@ cur_b										KEYWORD2
 CHOPCONF								KEYWORD2
 toff										KEYWORD2
 hstrt										KEYWORD2
-hysterisis_start				KEYWORD2
+hysteresis_start				KEYWORD2
 hend										KEYWORD2
-hysterisis_end  				KEYWORD2
+hysteresis_end  				KEYWORD2
 tbl											KEYWORD2
 vsense									KEYWORD2
 mres										KEYWORD2
