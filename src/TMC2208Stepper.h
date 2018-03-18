@@ -186,6 +186,13 @@ class TMC2208Stepper {
 
 		bool isWriteOnly() {return write_only;}
 
+		// Backwards compatibility
+		inline void hysterisis_end(int8_t value) __attribute__((always_inline)) { hysteresis_end(value); }
+		inline int8_t hysterisis_end() __attribute__((always_inline)) { return hysteresis_end(); }
+		inline void hysterisis_start(uint8_t value) __attribute__((always_inline)) { hysteresis_start(value); }
+		inline uint8_t hysterisis_start() __attribute__((always_inline)) { return hysteresis_start(); }
+
+
 		uint16_t bytesWritten = 0;
 		float Rsense = 0.11;
 		uint16_t replyDelay = 10;
