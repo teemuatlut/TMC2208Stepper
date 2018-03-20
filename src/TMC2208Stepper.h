@@ -66,6 +66,7 @@ class TMC2208Stepper {
 		// W: OTP_PROG
 		void OTP_PROG(uint32_t input);
 		// R: OTP_READ
+		bool OTP_READ(uint32_t *data);
 		// R: IOIN
 		bool IOIN(uint32_t *data);
 		bool enn();
@@ -205,6 +206,7 @@ class TMC2208Stepper {
 					GSTAT_sr = 			0x00000000UL,
 					SLAVECONF_sr = 		0x00000000UL,
 					OTP_PROG_sr = 		0x00000000UL,
+					OTP_READ_sr = 		0x00000000UL,
 					FACTORY_CONF_sr = 	0x00000000UL,
 					IHOLD_IRUN_sr = 	0x00000000UL,
 					TPOWERDOWN_sr = 	0x00000000UL,

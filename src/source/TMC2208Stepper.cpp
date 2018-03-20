@@ -226,6 +226,11 @@ void TMC2208Stepper::OTP_PROG(uint32_t input) {
 	UPDATE_REG(OTP_PROG);
 }
 
+// OTP_READ
+bool TMC2208Stepper::OTP_READ(uint32_t *data) {
+	READ_REG(OTP_READ)
+}
+
 // IOIN
 bool TMC2208Stepper::IOIN(uint32_t *data) {
 	bool b = sendDatagram(TMC2208_READ|REG_IOIN, data);
