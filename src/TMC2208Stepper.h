@@ -183,6 +183,12 @@ class TMC2208Stepper {
 		uint8_t pwm_scale_sum();
 		int16_t pwm_scale_auto();
 
+		// Backward compatibility
+		inline void hysterisis_end(int8_t value) { hysteresis_end(value); }
+		inline int8_t hysterisis_end() { hysteresis_end(); }
+		inline void hysterisis_start(uint8_t value) { hysteresis_start(value); }
+		inline uint8_t hysterisis_start() { hysteresis_start(); }
+
 		bool isWriteOnly() {return write_only;}
 
 		// Backwards compatibility
