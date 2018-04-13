@@ -198,6 +198,16 @@ class TMC2208Stepper {
 		float Rsense = 0.11;
 		uint16_t replyDelay = 10;
 		bool flag_otpw = false;
+
+		// Stored settings for Marlin LCD
+		struct {
+			uint16_t I_rms = 0;
+			bool stealthChop_enabled = false;
+			uint8_t hybrid_thrs = 0;
+			int8_t homing_thrs = 0;
+			uint8_t cs_actual = 0;
+			uint16_t sg_result = 0;
+		} stored;
 	private:
 		Stream * TMC_SERIAL;
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
