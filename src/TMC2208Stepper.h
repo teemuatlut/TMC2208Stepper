@@ -214,18 +214,19 @@ class TMC2208Stepper {
 		bool sendDatagram(uint8_t addr, uint32_t *data, uint8_t len=3);
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
 		// Shadow registers
-		uint32_t 	GCONF_sr = 			0x00000000UL,
+		// Default values assume no changes in OTP
+		uint32_t 	GCONF_sr = 			0x00000101UL,
 					GSTAT_sr = 			0x00000000UL,
 					SLAVECONF_sr = 		0x00000000UL,
 					OTP_PROG_sr = 		0x00000000UL,
 					OTP_READ_sr = 		0x00000000UL,
 					FACTORY_CONF_sr = 	0x00000000UL,
-					IHOLD_IRUN_sr = 	0x00000000UL,
-					TPOWERDOWN_sr = 	0x00000000UL,
+					IHOLD_IRUN_sr = 	0x00010000UL, // Reset default would be IRUN=31 IHOLD=16
+					TPOWERDOWN_sr = 	0x00000014UL,
 					TPWMTHRS_sr = 		0x00000000UL,
 					VACTUAL_sr = 		0x00000000UL,
-					CHOPCONF_sr = 		0x00000000UL,
-					PWMCONF_sr = 		0x00000000UL,
+					CHOPCONF_sr = 		0x10000053UL,
+					PWMCONF_sr = 		0xC10D0024UL,
 					tmp_sr = 			0x00000000UL;
 
 		bool write_only;
