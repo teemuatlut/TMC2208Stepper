@@ -215,7 +215,7 @@ class TMC2208Stepper {
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
 		// Shadow registers
 		// Default values assume no changes in OTP
-		uint32_t 	GCONF_sr = 			0x00000101UL,
+		uint32_t 	GCONF_sr = 			0x00000141UL, // Added default: pdn_disable = 1;
 					GSTAT_sr = 			0x00000000UL,
 					SLAVECONF_sr = 		0x00000000UL,
 					OTP_PROG_sr = 		0x00000000UL,
