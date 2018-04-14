@@ -7,11 +7,11 @@ bool TMC2208Stepper::GCONF(uint32_t *data) {
 		*data = GCONF_sr;
 		return 0;
 	}
-	READ_REG(GCONF);
+	REGISTER_R(GCONF);
 }
 void TMC2208Stepper::GCONF(uint32_t input) {
 	GCONF_sr = input;
-	UPDATE_REG(GCONF);
+	REGISTER_W(GCONF);
 }
 
 

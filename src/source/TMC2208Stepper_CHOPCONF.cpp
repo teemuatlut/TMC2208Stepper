@@ -4,14 +4,14 @@
 // CHOPCONF
 void TMC2208Stepper::CHOPCONF(uint32_t input) {
 	CHOPCONF_sr = input;
-	UPDATE_REG(CHOPCONF);
+	REGISTER_W(CHOPCONF);
 }
 bool TMC2208Stepper::CHOPCONF(uint32_t *data) {
 	if (write_only) {
 		*data = CHOPCONF_sr;
 		return 0;
 	}
-	READ_REG(CHOPCONF);
+	REGISTER_R(CHOPCONF);
 }
 void TMC2208Stepper::toff	( uint8_t  B )	{ MOD_REG(CHOPCONF, TOFF); 		}
 void TMC2208Stepper::hstrt	( uint8_t  B )	{ MOD_REG(CHOPCONF, HSTRT); 	}

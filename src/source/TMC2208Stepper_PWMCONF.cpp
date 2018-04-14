@@ -7,11 +7,11 @@ bool TMC2208Stepper::PWMCONF(uint32_t *data) {
 		*data = PWMCONF_sr;
 		return 0;
 	}
-	READ_REG(PWMCONF);
+	REGISTER_R(PWMCONF);
 }
 void TMC2208Stepper::PWMCONF(uint32_t input) {
 	PWMCONF_sr = input;
-	UPDATE_REG(PWMCONF);
+	REGISTER_W(PWMCONF);
 }
 
 void TMC2208Stepper::pwm_ofs		( uint8_t B ) { MOD_REG(PWMCONF, PWM_OFS); 		}

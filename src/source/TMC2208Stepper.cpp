@@ -231,11 +231,11 @@ bool TMC2208Stepper::GSTAT(uint32_t *data) {
 		*data = GSTAT_sr;
 		return 0;
 	}
-	READ_REG(GSTAT);
+	REGISTER_R(GSTAT);
 }
 void TMC2208Stepper::GSTAT(uint32_t input) {
 	GSTAT_sr = input;
-	UPDATE_REG(GSTAT);
+	REGISTER_W(GSTAT);
 }
 uint8_t TMC2208Stepper::GSTAT() {
 	uint32_t data = 0;
@@ -259,7 +259,7 @@ bool TMC2208Stepper::IFCNT(uint32_t *data) {
 // SLAVECONF
 void TMC2208Stepper::SLAVECONF(uint32_t input) {
 	SLAVECONF_sr = input&SLAVECONF_bm;
-	UPDATE_REG(SLAVECONF);
+	REGISTER_W(SLAVECONF);
 }
 bool TMC2208Stepper::SLAVECONF(uint32_t *data) {
 	*data = SLAVECONF_sr;
@@ -271,12 +271,12 @@ uint8_t TMC2208Stepper::senddelay() 		{ GET_BYTE(SLAVECONF, SENDDELAY); 	}
 // OTP_PROG
 void TMC2208Stepper::OTP_PROG(uint32_t input) {
 	OTP_PROG_sr = input;
-	UPDATE_REG(OTP_PROG);
+	REGISTER_W(OTP_PROG);
 }
 
 // OTP_READ
 bool TMC2208Stepper::OTP_READ(uint32_t *data) {
-	READ_REG(OTP_READ)
+	REGISTER_R(OTP_READ)
 }
 
 // IOIN
@@ -300,11 +300,11 @@ bool TMC2208Stepper::FACTORY_CONF(uint32_t *data) {
 		*data = FACTORY_CONF_sr;
 		return 0;
 	}
-	READ_REG(FACTORY_CONF);
+	REGISTER_R(FACTORY_CONF);
 }
 void TMC2208Stepper::FACTORY_CONF(uint32_t input) {
 	FACTORY_CONF_sr = input;
-	UPDATE_REG(FACTORY_CONF);
+	REGISTER_W(FACTORY_CONF);
 }
 void TMC2208Stepper::fclktrim(uint8_t B){ MOD_REG(FACTORY_CONF, FCLKTRIM);	}
 void TMC2208Stepper::ottrim(uint8_t B)	{ MOD_REG(FACTORY_CONF, OTTRIM);	}
@@ -314,7 +314,7 @@ uint8_t TMC2208Stepper::ottrim()		{ GET_BYTE(FACTORY_CONF, OTTRIM);	}
 // IHOLD_IRUN
 void TMC2208Stepper::IHOLD_IRUN(uint32_t input) {
 	IHOLD_IRUN_sr = input;
-	UPDATE_REG(IHOLD_IRUN);
+	REGISTER_W(IHOLD_IRUN);
 }
 bool TMC2208Stepper::IHOLD_IRUN(uint32_t *data) {
 	*data = IHOLD_IRUN_sr;
@@ -330,7 +330,7 @@ uint8_t TMC2208Stepper::iholddelay()  		{ GET_BYTE(IHOLD_IRUN, IHOLDDELAY);	}
 // TPOWERDOWN
 void TMC2208Stepper::TPOWERDOWN(uint32_t input) {
 	TPOWERDOWN_sr = input;
-	UPDATE_REG(TPOWERDOWN);
+	REGISTER_W(TPOWERDOWN);
 }
 bool TMC2208Stepper::TPOWERDOWN(uint32_t *data) {
 	*data = TPOWERDOWN_sr;
@@ -346,7 +346,7 @@ bool TMC2208Stepper::TSTEP(uint32_t *data) {
 // TPWMTHRS
 void TMC2208Stepper::TPWMTHRS(uint32_t input) {
 	TPWMTHRS_sr = input;
-	UPDATE_REG(TPWMTHRS);
+	REGISTER_W(TPWMTHRS);
 }
 bool TMC2208Stepper::TPWMTHRS(uint32_t *data) {
 	*data = TPWMTHRS_sr;
@@ -359,7 +359,7 @@ uint32_t TMC2208Stepper::TPWMTHRS() {
 // VACTUAL
 void TMC2208Stepper::VACTUAL(uint32_t input) {
 	VACTUAL_sr = input;
-	UPDATE_REG(VACTUAL);
+	REGISTER_W(VACTUAL);
 }
 bool TMC2208Stepper::VACTUAL(uint32_t *data) {
 	*data = VACTUAL_sr;
