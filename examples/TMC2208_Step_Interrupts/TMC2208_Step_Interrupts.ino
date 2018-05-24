@@ -9,7 +9,7 @@
 #define PORT_PIN  0 // PORTF0 <=> Pin 54 // ATMEGA
 
 #include <TMC2208Stepper.h>
-TMC2208Stepper driver = TMC2208Stepper(Serial1);  // Create driver
+TMC2208Stepper driver = TMC2208Stepper(&Serial1);  // Create driver
 
 ISR(TIMER1_COMPA_vect){
   STEP_PORT |= 1 << PORT_PIN;

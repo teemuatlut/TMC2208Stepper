@@ -5,7 +5,7 @@
 #define STEP_PIN  54  // Step on rising edge
 
 #include <TMC2208Stepper.h>                       // Include library
-TMC2208Stepper driver = TMC2208Stepper(Serial1);  // Create driver and use
+TMC2208Stepper driver = TMC2208Stepper(&Serial1);  // Create driver and use
                                                   // HardwareSerial0 for communication
 
 void setup() {
