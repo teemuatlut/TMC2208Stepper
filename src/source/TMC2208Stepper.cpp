@@ -19,8 +19,8 @@ TMC2208Stepper::TMC2208Stepper(HardwareSerial &SerialPort, bool has_rx) {
 TMC2208Stepper::TMC2208Stepper(uint16_t SW_RX_pin, uint16_t SW_TX_pin, bool has_rx) {
 	write_only = !has_rx;
 	uses_sw_serial = true;
-	static SoftwareSerial mySWSerial = SoftwareSerial(SW_RX_pin, SW_TX_pin);
-	SWSerial = &mySWSerial;
+	SoftwareSerial *mySWSerial = new SoftwareSerial(SW_RX_pin, SW_TX_pin);
+	SWSerial = mySWSerial;
 }
 
 void TMC2208Stepper::beginSerial(uint32_t baudrate) {
