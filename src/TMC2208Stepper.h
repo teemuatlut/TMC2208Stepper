@@ -8,7 +8,7 @@
 #include <Stream.h>
 #include <SoftwareSerial.h>
 
-#define TMC2208STEPPER_VERSION 0x000201 // v0.2.1
+#define TMC2208STEPPER_VERSION 0x000202 // v0.2.2
 
 class TMC2208Stepper {
 	public:
