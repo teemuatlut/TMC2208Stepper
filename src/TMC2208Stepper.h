@@ -10,7 +10,7 @@
 	#include <SoftwareSerial.h>
 #endif
 
-#define TMC2208STEPPER_VERSION 0x000202 // v0.2.2
+#define TMC2208STEPPER_VERSION 0x000203 // v0.2.3
 
 class TMC2208Stepper {
 	public:
