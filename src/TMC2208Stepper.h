@@ -6,14 +6,18 @@
 #endif
 
 #include <Stream.h>
-#include <SoftwareSerial.h>
+#ifdef __AVR__
+	#include <SoftwareSerial.h>
+#endif
 
 #define TMC2208STEPPER_VERSION 0x000202 // v0.2.2
 
 class TMC2208Stepper {
 	public:
 		TMC2208Stepper(Stream * SerialPort, bool has_rx=true);
-		TMC2208Stepper(uint16_t SW_RX_pin, uint16_t SW_TX_pin, bool has_rx=true);
+		#ifdef __AVR__
+			TMC2208Stepper(int16_t SW_RX_pin, int16_t SW_TX_pin, bool has_rx=true);
+		#endif
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
 		uint16_t rms_current();
 		void microsteps(uint16_t ms);
@@ -210,7 +214,9 @@ class TMC2208Stepper {
 		} stored;
 	private:
 		Stream * HWSerial = NULL;
-		SoftwareSerial * SWSerial = NULL;
+		#ifdef __AVR__
+			SoftwareSerial * SWSerial = NULL;
+		#endif
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
 		bool sendDatagram(uint8_t addr, uint32_t *data, uint8_t len=3);
 		uint8_t calcCRC(uint8_t datagram[], uint8_t len);
