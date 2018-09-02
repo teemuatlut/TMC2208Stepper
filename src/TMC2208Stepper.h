@@ -5,8 +5,10 @@
 	#include <Arduino.h>
 #endif
 
+#define SW_CAPABLE_PLATFORM defined(__AVR__) || defined(TARGET_LPC1768)
+
 #include <Stream.h>
-#ifdef __AVR__
+#if SW_CAPABLE_PLATFORM
 	#include <SoftwareSerial.h>
 #endif
 
@@ -15,7 +17,7 @@
 class TMC2208Stepper {
 	public:
 		TMC2208Stepper(Stream * SerialPort, bool has_rx=true);
-		#ifdef __AVR__
+		#if SW_CAPABLE_PLATFORM
 			TMC2208Stepper(int16_t SW_RX_pin, int16_t SW_TX_pin, bool has_rx=true);
 		#endif
 		void rms_current(uint16_t mA, float multiplier=0.5, float RS=0.11);
@@ -214,7 +216,7 @@ class TMC2208Stepper {
 		} stored;
 	private:
 		Stream * HWSerial = NULL;
-		#ifdef __AVR__
+		#if SW_CAPABLE_PLATFORM
 			SoftwareSerial * SWSerial = NULL;
 		#endif
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);

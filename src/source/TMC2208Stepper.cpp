@@ -16,7 +16,7 @@ TMC2208Stepper::TMC2208Stepper(HardwareSerial &SerialPort, bool has_rx) {
 	SerialObject = &SerialPort;
 }
 */
-#ifdef __AVR__
+#ifdef SW_CAPABLE_PLATFORM
 	TMC2208Stepper::TMC2208Stepper(int16_t SW_RX_pin, int16_t SW_TX_pin, bool has_rx) {
 		write_only = !has_rx;
 		uses_sw_serial = true;
@@ -177,7 +177,7 @@ void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 	datagram[len] = calcCRC(datagram, len);
 
 	if (uses_sw_serial) {
-		#ifdef __AVR__
+		#ifdef SW_CAPABLE_PLATFORM
 			for(int i=0; i<=len; i++){
 				bytesWritten += SWSerial->write(datagram[i]);
 			}
@@ -214,7 +214,7 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 	uint64_t out = 0x00000000UL;
 
 	if (uses_sw_serial) {
-		#ifdef __AVR__
+		#ifdef SW_CAPABLE_PLATFORM
 			SWSerial->listen();
 			out = _sendDatagram(*SWSerial, datagram, len, replyDelay);
 		#endif
