@@ -31,4 +31,3 @@ bool 	TMC2208Stepper::pwm_autograd()	{ GET_BYTE(PWMCONF, PWM_AUTOGRAD);	}
 uint8_t TMC2208Stepper::freewheel()		{ GET_BYTE(PWMCONF, FREEWHEEL);		}
 uint8_t TMC2208Stepper::pwm_reg()		{ GET_BYTE(PWMCONF, PWM_REG);		}
 uint8_t TMC2208Stepper::pwm_lim()		{ GET_BYTE(PWMCONF, PWM_LIM);		}
-
