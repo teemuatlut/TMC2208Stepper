@@ -218,6 +218,9 @@ class TMC2208Stepper {
 		Stream * HWSerial = NULL;
 		#if SW_CAPABLE_PLATFORM
 			SoftwareSerial * SWSerial = NULL;
+			bool uses_sw_serial;
+		#else
+			constexpr static bool uses_sw_serial = false;
 		#endif
 		void sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len=7);
 		bool sendDatagram(uint8_t addr, uint32_t *data, uint8_t len=3);
@@ -239,7 +242,6 @@ class TMC2208Stepper {
 					tmp_sr = 			0x00000000UL;
 
 		bool write_only;
-		bool uses_sw_serial;
 		uint16_t mA_val = 0;
 };
 

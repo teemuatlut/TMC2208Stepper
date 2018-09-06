@@ -6,7 +6,9 @@
 //TMC2208Stepper::TMC2208Stepper(HardwareSerial& SR) : TMC_SERIAL(SR) {}
 TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, bool has_rx) {
 	write_only = !has_rx;
-	uses_sw_serial = false;
+	#if SW_CAPABLE_PLATFORM
+		uses_sw_serial = false;
+	#endif
 	HWSerial = SerialPort;
 }
 /*
@@ -16,7 +18,9 @@ TMC2208Stepper::TMC2208Stepper(HardwareSerial &SerialPort, bool has_rx) {
 	SerialObject = &SerialPort;
 }
 */
-#ifdef SW_CAPABLE_PLATFORM
+
+#if SW_CAPABLE_PLATFORM
+
 	TMC2208Stepper::TMC2208Stepper(int16_t SW_RX_pin, int16_t SW_TX_pin, bool has_rx) {
 		write_only = !has_rx;
 		uses_sw_serial = true;
@@ -28,7 +32,8 @@ TMC2208Stepper::TMC2208Stepper(HardwareSerial &SerialPort, bool has_rx) {
 		if (uses_sw_serial) SWSerial->begin(baudrate);
 		//else static_cast<HardwareSerial*>(SerialObject)->begin(baudrate);
 	}
-#endif
+
+#endif // SW_CAPABLE_PLATFORM
 
 /*	
 	Requested current = mA = I_rms/1000
@@ -177,15 +182,18 @@ void TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t regVal, uint8_t len) {
 	datagram[len] = calcCRC(datagram, len);
 
 	if (uses_sw_serial) {
-		#ifdef SW_CAPABLE_PLATFORM
-			for(int i=0; i<=len; i++){
+
+		#if SW_CAPABLE_PLATFORM
+
+			for(int i=0; i<=len; i++)
 				bytesWritten += SWSerial->write(datagram[i]);
-			}
+
 		#endif
-	} else {
-		for(int i=0; i<=len; i++){
+
+	}
+	else {
+		for(int i=0; i<=len; i++)
 			bytesWritten += HWSerial->write(datagram[i]);
-		}
 	}
 	delay(replyDelay);
 }
@@ -214,10 +222,12 @@ bool TMC2208Stepper::sendDatagram(uint8_t addr, uint32_t *data, uint8_t len) {
 	uint64_t out = 0x00000000UL;
 
 	if (uses_sw_serial) {
-		#ifdef SW_CAPABLE_PLATFORM
+
+		#if SW_CAPABLE_PLATFORM
 			SWSerial->listen();
 			out = _sendDatagram(*SWSerial, datagram, len, replyDelay);
 		#endif
+
 	} else {
 		out = _sendDatagram(*HWSerial, datagram, len, replyDelay);
 	}
