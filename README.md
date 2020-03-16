@@ -44,7 +44,7 @@ To allow both writing and reading with the driver, connect microcontroller RX to
 
 Image by [Watterott](https://github.com/watterott/SilentStepStick/tree/master/software/ScriptCommunicator)
 
-![hw-connection](https://raw.githubusercontent.com/watterott/SilentStepStick/master/software/ScriptCommunicator/hw_connection.png)
+![hw-connection](https://learn.watterott.com/silentstepstick/configurator/connection.png)
 
 ## Example
 ```cpp
