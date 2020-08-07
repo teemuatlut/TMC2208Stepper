@@ -1,3 +1,5 @@
+This library has been superseded by the newer [TMCStepper library](https://github.com/teemuatlut/TMCStepper) which supports many more of the Trinamic stepper drivers and more MCU architectures.
+
 # TMC2208Stepper
 Arduino library for Trinamic TMC2208 Stepper driver
 
